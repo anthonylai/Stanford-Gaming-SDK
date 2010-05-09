@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.IntentFilter.MalformedMimeTypeException;
+import android.net.Uri;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 
 public class GamingServiceConnection implements ServiceConnection  {
@@ -18,10 +21,16 @@ public class GamingServiceConnection implements ServiceConnection  {
 	private Intent intent; 
 	private Activity activity; 
 	private BroadcastReceiver receiver;
-	public GamingServiceConnection(Activity activity, BroadcastReceiver receiver) {
+	private String appName;
+	private String appApiKey;
+	public GamingServiceConnection(Activity activity, BroadcastReceiver receiver, 
+			String appName, String appApiKey) {
 		this.activity = activity;
-        this.intent = new Intent(activity, GamingService.class);	
+//        this.intent = new Intent(activity, GamingService.class);	
+		this.intent = new Intent("edu.stanford.cs.gaming.sdk.service");
         this.receiver = receiver;
+        this.appName = appName;
+        this.appApiKey = appApiKey;
 	}
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
@@ -29,6 +38,18 @@ public class GamingServiceConnection implements ServiceConnection  {
 //		if (grs == null) {
 			Log.d(TAG, "Service connecting");			
 			grs = GamingRemoteService.Stub.asInterface(service);
+			try {
+				grs.addApp(appName, appApiKey);
+//				try {
+					activity.registerReceiver(receiver, new IntentFilter("edu.stanford.cs.gaming.sdk." + appName + ".Event"));
+//				} catch (MalformedMimeTypeException e) {
+
+//					e.printStackTrace();
+//				}					
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			connected = true;
 			Log.d(TAG, "Service connected");
 //		}
@@ -49,7 +70,17 @@ public class GamingServiceConnection implements ServiceConnection  {
 			Log.d(TAG, "bind service starting");
 			activity.bindService(intent, this, Context.BIND_AUTO_CREATE);
 			Log.d( getClass().getSimpleName(), "bind service complete" );
-			activity.registerReceiver(receiver, new IntentFilter(GamingService.BROADCAST_ACTION));			
+/*
+			Uri.Builder uriBuilder = new Uri.Builder();
+			uriBuilder.appendEncodedPath(appName);
+			uriBuilder.appendEncodedPath(appApiKey);
+			Uri uri = uriBuilder.build();
+			*/
+
+	
+
+//			activity.registerReceiver(receiver, new IntentFilter(GamingService.BROADCAST_ACTION));
+			
 		}
 		return true;
 	}
