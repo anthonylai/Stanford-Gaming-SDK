@@ -11,7 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.stanford.cs.gaming.sdk.model.GameObject;
+import edu.stanford.cs.gaming.sdk.model.Obj;
 
 import android.util.Log;
 
@@ -142,8 +142,8 @@ public class Util {
     				
     			    obj1 = Class.forName(className).newInstance(); 
     			    Log.d(TAG, "Class.forName(className): " + Class.forName(className).getName());
-    			    Log.d(TAG, "obj1 instance of GameObject: " + (obj1 instanceof GameObject));
-    			    Log.d(TAG, "Object class is: " + ((Object)(new GameObject("111"))).getClass());
+    			    Log.d(TAG, "obj1 instance of GameObject: " + (obj1 instanceof Obj));
+    			    Log.d(TAG, "Object class is: " + ((Object)(new Obj())).getClass());
         	    		Field[] fields = obj1.getClass().getFields();
 //    			        Field[] fields = GameObject.class.getFields();
         	    		Log.d(TAG, "Fields length is: " + fields.length);

@@ -1,5 +1,5 @@
 package edu.stanford.cs.gaming.sdk.service;
-
+import edu.stanford.cs.gaming.sdk.model.*;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -98,5 +98,17 @@ public class GamingServiceConnection implements ServiceConnection  {
 	   return true;
 
 	}
-
+	
+	public boolean registerUser(User user) {
+	  return true;
+	}
+	
+	public boolean getInvitableFriends() {
+		return true;
+	}
+	
+    public boolean getFriends() {
+    	return true;
+    }
+    
 }

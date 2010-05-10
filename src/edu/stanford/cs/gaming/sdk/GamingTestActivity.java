@@ -2,7 +2,7 @@ package edu.stanford.cs.gaming.sdk;
 
 import org.json.JSONObject;
 
-import edu.stanford.cs.gaming.sdk.model.GameObject;
+import edu.stanford.cs.gaming.sdk.model.Obj;
 import edu.stanford.cs.gaming.sdk.model.User;
 import edu.stanford.cs.gaming.sdk.service.*;
 

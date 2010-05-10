@@ -1,5 +1,6 @@
 package edu.stanford.cs.gaming.sdk.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,7 +35,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.stanford.cs.gaming.sdk.model.GameObject;
+import edu.stanford.cs.gaming.sdk.model.*;
 
 import java.io.*;
 
@@ -56,10 +57,12 @@ public class GamingService extends Service implements LocationListener {
     private Location location;
     private int currentMilli = 0;
     private String locationString = "No location yet";
-    private Hashtable<String, Intent> appHash = new Hashtable<String, Intent>();
+    private Hashtable<String, App> appHash = new Hashtable<String, App>();
     private List<String> taskList = new ArrayList<String>();
     private List<String> completedTaskList = new ArrayList<String>();
-	@Override
+    public static List<AppRequest> requestQ;
+
+    @Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
 //		return LoggerRemoteServiceStub;
@@ -70,8 +73,11 @@ public class GamingService extends Service implements LocationListener {
 
 	private GamingRemoteService.Stub gamingRemoteServiceStub = new GamingRemoteService.Stub() {
         public boolean addApp(String appName, String appApiKey) throws RemoteException {
-        	appHash.put(appName, new Intent("edu.stanford.cs.gaming.sdk." + appName + ".Event" ));
-        	Log.d("GamingRemoteServiceStub", "addApp()");
+    		Log.d("GamingRemoteServiceStub", "addApp()");
+        	if (appHash.get(appName) == null) {
+        		appHash.put(appName, new App(appName));
+
+        	}
         	return true;
         	
         }
@@ -110,7 +116,13 @@ public class GamingService extends Service implements LocationListener {
 			return;
 		}
 	};
+	public GamingService() {
+		if (requestQ == null) {
+			requestQ = new ArrayList<AppRequest>();
+		}
+
 		
+	}
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -194,7 +206,7 @@ public class GamingService extends Service implements LocationListener {
                     Log.d(TAG, "HERE 4");
                     
 //                    makeGet("http://www.stanford.edu");
-    		        sendBroadcast(appHash.get(appName));
+    		        sendBroadcast(appHash.get(appName).intent);
     		    	}                
  //               showNotification();
 //                for (Intent intent : intentArr) {
