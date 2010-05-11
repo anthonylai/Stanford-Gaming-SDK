@@ -21,15 +21,15 @@ public class GamingServiceConnection implements ServiceConnection  {
 	private Intent intent; 
 	private Activity activity; 
 	private BroadcastReceiver receiver;
-	private String appName;
+	private int appId;
 	private String appApiKey;
 	public GamingServiceConnection(Activity activity, BroadcastReceiver receiver, 
-			String appName, String appApiKey) {
+			int appId, String appApiKey) {
 		this.activity = activity;
 //        this.intent = new Intent(activity, GamingService.class);	
 		this.intent = new Intent("edu.stanford.cs.gaming.sdk.service");
         this.receiver = receiver;
-        this.appName = appName;
+        this.appId = appId;
         this.appApiKey = appApiKey;
 	}
 	@Override
@@ -39,9 +39,9 @@ public class GamingServiceConnection implements ServiceConnection  {
 			Log.d(TAG, "Service connecting");			
 			grs = GamingRemoteService.Stub.asInterface(service);
 			try {
-				grs.addApp(appName, appApiKey);
+				grs.addApp(appId, appApiKey);
 //				try {
-					activity.registerReceiver(receiver, new IntentFilter("edu.stanford.cs.gaming.sdk." + appName + ".Event"));
+					activity.registerReceiver(receiver, new IntentFilter("edu.stanford.cs.gaming.sdk." + appId + ".Event"));
 //				} catch (MalformedMimeTypeException e) {
 
 //					e.printStackTrace();
@@ -59,8 +59,16 @@ public class GamingServiceConnection implements ServiceConnection  {
 	@Override
 	public void onServiceDisconnected(ComponentName name) {
 		Log.d(TAG, "Service disconnectiong");
-		grs=null;	
-		connected = false;		
+		
+		try {
+			grs.removeApp(appId);
+			grs=null;	
+			connected = false;				
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 		
 	}
 	public boolean bind() {
@@ -98,7 +106,10 @@ public class GamingServiceConnection implements ServiceConnection  {
 	   return true;
 
 	}
-	
+	public boolean testRequest(AppRequest request) {
+		Util.toJson(request);
+		return true;
+	}
 	public boolean registerUser(User user) {
 	  return true;
 	}

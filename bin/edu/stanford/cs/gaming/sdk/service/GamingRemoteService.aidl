@@ -6,12 +6,15 @@ interface GamingRemoteService {
 	
 	String getLocationString();
 	
-	boolean addApp(String appName, String appApiKey);
+	boolean addApp(int appId, String appApiKey);
 	
 	void doGet(String url);
 	
 	void putGameObject(String gameObjJsonStr);
 	
-	String getNextCompletedTask();
+	String getNextCompletedTask(int appId);
 	
+    boolean removeApp(int appId);	
+	
+	boolean sendRequest(int appId, String request);
 }

@@ -57,10 +57,11 @@ public class GamingService extends Service implements LocationListener {
     private Location location;
     private int currentMilli = 0;
     private String locationString = "No location yet";
-    private Hashtable<String, App> appHash = new Hashtable<String, App>();
+    private Hashtable<Integer, App> appHash = new Hashtable<Integer, App>();
     private List<String> taskList = new ArrayList<String>();
     private List<String> completedTaskList = new ArrayList<String>();
     public static List<AppRequest> requestQ;
+    private GamingService gamingService = this;
 
     @Override
 	public IBinder onBind(Intent arg0) {
@@ -72,14 +73,39 @@ public class GamingService extends Service implements LocationListener {
 	}
 
 	private GamingRemoteService.Stub gamingRemoteServiceStub = new GamingRemoteService.Stub() {
-        public boolean addApp(String appName, String appApiKey) throws RemoteException {
+        public boolean addApp(int appId, String appApiKey) throws RemoteException {
     		Log.d("GamingRemoteServiceStub", "addApp()");
-        	if (appHash.get(appName) == null) {
-        		appHash.put(appName, new App(appName));
+        	if (appHash.get(appId) == null) {
+        		appHash.put(appId, new App(appId, gamingService));
 
         	}
         	return true;
         	
+        }
+
+    	public boolean sendRequest(int appId, String request) throws RemoteException {
+    		Log.d("GamingRemoteServiceStub", "sendRequest(), appId: " + appId + ", request: " + request);
+    		App app = appHash.get(appId);
+    		try {
+    			AppRequest appRequest;
+					appRequest = (AppRequest) Util.fromJson(new JSONObject(request), null, null);
+
+				app.requestQ.put((AppRequest) appRequest);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    		return true;
+    	}
+        
+        public boolean removeApp(int appId) throws RemoteException {
+        	Log.d("GamingRemoveServiceStub", "removeApp()");
+        	if (appHash.get(appId) == null) {
+        		App app = appHash.remove(appId);
+        		app.stopService();
+        	}
+        	return true;
         }
 		public int getCounter() throws RemoteException {
 			Log.d("GamingRemoteServiceStub", "onBind()");
@@ -94,10 +120,20 @@ public class GamingService extends Service implements LocationListener {
 			taskList.add(url);
 			return;
 		}
-		public String getNextCompletedTask() throws RemoteException {
-			if (completedTaskList.size() <= 0)
-				return null;
-			return completedTaskList.remove(0);
+		public String getNextCompletedTask(int appId) throws RemoteException {
+			if (!appHash.get(appId).responseQ.isEmpty()) {
+				Object object = null;
+				try {
+					object = appHash.get(appId).responseQ.take();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+//				Object object = appHash.get(appId).responseQ.remove(0);
+				Log.d("GamingRemoteServiceStub", "nextTask returned is: \n" + object);
+				return Util.toJson(object).toString();
+			}
+			return null;
 		}
 		public void putGameObject(String gameObjJsonStr) throws RemoteException {
 //			JSONObject gameObjJson;
@@ -117,10 +153,11 @@ public class GamingService extends Service implements LocationListener {
 		}
 	};
 	public GamingService() {
+		/*
 		if (requestQ == null) {
 			requestQ = new ArrayList<AppRequest>();
 		}
-
+*/
 		
 	}
 	@Override
@@ -192,8 +229,8 @@ public class GamingService extends Service implements LocationListener {
                 */
 
                 //   	        sendBroadcast(broadcast);
-    	    	for (String appName : appHash.keySet()) {
-                    Log.d(TAG, "123 Broadcasting to : " + appName);
+    	    	for (int appId : appHash.keySet()) {
+                    Log.d(TAG, "123 Broadcasting to : " + appId);
                     while (taskList.size() > 0) {
                     Log.d(TAG, "HERE 1");
                     String name = taskList.remove(0);
@@ -206,7 +243,7 @@ public class GamingService extends Service implements LocationListener {
                     Log.d(TAG, "HERE 4");
                     
 //                    makeGet("http://www.stanford.edu");
-    		        sendBroadcast(appHash.get(appName).intent);
+    		        sendBroadcast(appHash.get(appId).intent);
     		    	}                
  //               showNotification();
 //                for (Intent intent : intentArr) {
@@ -264,100 +301,6 @@ public class GamingService extends Service implements LocationListener {
 	
 	}
 	
-	public String makeGet(String path) { //, Map params) {
-
-	DefaultHttpClient httpclient = new DefaultHttpClient();
-	HttpGet httpGet = new HttpGet(path);
-	/*
-	Iterator iter = params.entrySet().iterator();
-
-	JSONObject holder = new JSONObject();
-
-	while(iter.hasNext()) {
-	Map.Entry pairs = (Map.Entry)iter.next();
-	String key = (String)pairs.getKey();
-	Map m = (Map)pairs.getValue();
-	   
-	JSONObject data = new JSONObject();
-	Iterator iter2 = m.entrySet().iterator();
-	while(iter2.hasNext()) {
-	Map.Entry pairs2 = (Map.Entry)iter2.next();
-	data.put((String)pairs2.getKey(), (String)pairs2.getValue());
-	}
-	holder.put(key, data);
-	}
-
-	StringEntity se = new StringEntity(holder.toString());
-	httpost.setEntity(se);
-	httpost.setHeader("Accept", "application/json");
-	httpost.setHeader("Content-type", "application/json");
-
-	ResponseHandler responseHandler = new BasicResponseHandler();
-
-	try {
-		Object response = httpclient.execute(httpget, responseHandler);
-	} catch (ClientProtocolException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-		*/
-	try {
-		HttpResponse response = httpclient.execute(httpGet);
-		InputStream is = response.getEntity().getContent();
-		BufferedReader sr = new BufferedReader(new InputStreamReader(is));
-		StringBuffer content = new StringBuffer();
-		String line = "";
-//		while ((line = sr.readLine()) != null) {
-//			content.append(line);
-//		}
-        content.append(sr.readLine() + "\n");
-        completedTaskList.add("Counter: " + counter + "\nName: " + path + "\n Content: " +content.toString() + "\n");
-		Log.d(TAG, "Counter: " + counter + "\nContent: " +content.toString());
-	} catch (ClientProtocolException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	return "done";
-	}
-		
-	public static String makeRequest(String path, Map params)
-	throws Exception {
-
-	DefaultHttpClient httpclient = new DefaultHttpClient();
-	HttpPost httpost = new HttpPost(path);
-	Iterator iter = params.entrySet().iterator();
-
-	JSONObject holder = new JSONObject();
-
-	while(iter.hasNext()) {
-	Map.Entry pairs = (Map.Entry)iter.next();
-	String key = (String)pairs.getKey();
-	Map m = (Map)pairs.getValue();
-	   
-	JSONObject data = new JSONObject();
-	Iterator iter2 = m.entrySet().iterator();
-	while(iter2.hasNext()) {
-	Map.Entry pairs2 = (Map.Entry)iter2.next();
-	data.put((String)pairs2.getKey(), (String)pairs2.getValue());
-	}
-	holder.put(key, data);
-	}
-
-	StringEntity se = new StringEntity(holder.toString());
-	httpost.setEntity(se);
-	httpost.setHeader("Accept", "application/json");
-	httpost.setHeader("Content-type", "application/json");
-
-	ResponseHandler responseHandler = new BasicResponseHandler();
-	Object response = httpclient.execute(httpost, responseHandler);
-	return "done";
-	}
 	
     private void showNotification() {
     	Log.d("LoggerService", "ShowNotification");
@@ -395,8 +338,8 @@ public class GamingService extends Service implements LocationListener {
 	    	} catch (Exception e) {
 	    	  locationString += "Problem in getting addresses" + e.getMessage() + "\n";
 	    	}
-	    	for (String appName : appHash.keySet()) {
-//	        sendBroadcast(broadcast, appName);
+	    	for (int appId : appHash.keySet()) {
+//	        sendBroadcast(broadcast, appId);
 	    	}
 	        Log.d(TAG, "Location broadcasted");
 

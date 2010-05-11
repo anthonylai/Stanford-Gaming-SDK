@@ -1,4 +1,8 @@
 package edu.stanford.cs.gaming.sdk.service;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -6,7 +10,16 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,6 +102,7 @@ public class Util {
   		  Field[] fields = obj.getClass().getFields();
 		  for (Field field: fields) {
 			  Object obj1 = field.get(obj);
+			  if (obj1 != null) {
 			  Log.d(TAG, "HERE: " + field.getName() + field.get(obj));
 			  Log.d(TAG, "Primitive check for: " + obj1.getClass() + ":" + obj1.getClass().isPrimitive() + ":" + isWrapperType(obj1.getClass()));
 					jsonObj1.put(field.getName(), toJson(obj1));	
@@ -97,7 +111,7 @@ public class Util {
 				  
 //					 Log.d(TAG, "NOT EQUALS");
 //				     Log.d(TAG, field.getName() + ":" + field.getType().toString() + ":" + field.get(obj));
-
+			  }
 		  }	  
  
 		jsonObj.put(obj.getClass().getName(), jsonObj1);
@@ -203,6 +217,102 @@ public class Util {
     	
     	return null;
     }
+    
+	public static String makeGet(String path) { //, Map params) {
+		StringBuffer content = new StringBuffer();
+
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(path);
+		/*
+		Iterator iter = params.entrySet().iterator();
+
+		JSONObject holder = new JSONObject();
+
+		while(iter.hasNext()) {
+		Map.Entry pairs = (Map.Entry)iter.next();
+		String key = (String)pairs.getKey();
+		Map m = (Map)pairs.getValue();
+		   
+		JSONObject data = new JSONObject();
+		Iterator iter2 = m.entrySet().iterator();
+		while(iter2.hasNext()) {
+		Map.Entry pairs2 = (Map.Entry)iter2.next();
+		data.put((String)pairs2.getKey(), (String)pairs2.getValue());
+		}
+		holder.put(key, data);
+		}
+
+		StringEntity se = new StringEntity(holder.toString());
+		httpost.setEntity(se);
+		httpost.setHeader("Accept", "application/json");
+		httpost.setHeader("Content-type", "application/json");
+
+		ResponseHandler responseHandler = new BasicResponseHandler();
+
+		try {
+			Object response = httpclient.execute(httpget, responseHandler);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			*/
+		try {
+			HttpResponse response = httpclient.execute(httpGet);
+			InputStream is = response.getEntity().getContent();
+			BufferedReader sr = new BufferedReader(new InputStreamReader(is));
+			String line = "";
+//			while ((line = sr.readLine()) != null) {
+//				content.append(line);
+//			}
+	        content.append(sr.readLine() + "\n");
+//	        completedTaskList.add("Counter: " + counter + "\nName: " + path + "\n Content: " +content.toString() + "\n");
+//			Log.d(TAG, "Counter: " + counter + "\nContent: " +content.toString());
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return content.toString();
+		}
+			
+		public static String makeRequest(String path, Map params)
+		throws Exception {
+
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+		HttpPost httpost = new HttpPost(path);
+		Iterator iter = params.entrySet().iterator();
+
+		JSONObject holder = new JSONObject();
+
+		while(iter.hasNext()) {
+		Map.Entry pairs = (Map.Entry)iter.next();
+		String key = (String)pairs.getKey();
+		Map m = (Map)pairs.getValue();
+		   
+		JSONObject data = new JSONObject();
+		Iterator iter2 = m.entrySet().iterator();
+		while(iter2.hasNext()) {
+		Map.Entry pairs2 = (Map.Entry)iter2.next();
+		data.put((String)pairs2.getKey(), (String)pairs2.getValue());
+		}
+		holder.put(key, data);
+		}
+
+		StringEntity se = new StringEntity(holder.toString());
+		httpost.setEntity(se);
+		httpost.setHeader("Accept", "application/json");
+		httpost.setHeader("Content-type", "application/json");
+
+		ResponseHandler responseHandler = new BasicResponseHandler();
+		Object response = httpclient.execute(httpost, responseHandler);
+		return "done";
+		}
+    
   
   /*
   public static Object toJson(String name, Object obj) {
