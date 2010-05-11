@@ -17,4 +17,9 @@ interface GamingRemoteService {
     boolean removeApp(int appId);	
 	
 	boolean sendRequest(int appId, String request);
+	
+	boolean hasPendingNotification(int appId);
+
+	String getNextPendingNotification(int appId); 
+
 }

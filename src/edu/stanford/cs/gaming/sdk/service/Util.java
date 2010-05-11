@@ -15,11 +15,13 @@ import java.util.Map;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,7 +73,7 @@ public class Util {
   */
   public static Object toJson(Object obj) {
 	  if (obj != null)
-	  Log.d(TAG, obj.getClass().getName());
+//	  Log.d(TAG, obj.getClass().getName());
 
 
 	  try {
@@ -81,9 +83,9 @@ public class Util {
         return obj;
 			
 	  }
-	  Log.d(TAG, "isArray: " + obj.getClass().isArray());
+//	  Log.d(TAG, "isArray: " + obj.getClass().isArray());
 	  if (obj.getClass().isArray()) {
-		  Log.d(TAG, "ARRAY!!!");
+//		  Log.d(TAG, "ARRAY!!!");
 		  int arrLen = Array.getLength(obj);
 		  JSONArray jsonArray = new JSONArray();
 		  for (int i=0; i < arrLen; i++) {
@@ -103,8 +105,8 @@ public class Util {
 		  for (Field field: fields) {
 			  Object obj1 = field.get(obj);
 			  if (obj1 != null) {
-			  Log.d(TAG, "HERE: " + field.getName() + field.get(obj));
-			  Log.d(TAG, "Primitive check for: " + obj1.getClass() + ":" + obj1.getClass().isPrimitive() + ":" + isWrapperType(obj1.getClass()));
+//			  Log.d(TAG, "HERE: " + field.getName() + field.get(obj));
+//			  Log.d(TAG, "Primitive check for: " + obj1.getClass() + ":" + obj1.getClass().isPrimitive() + ":" + isWrapperType(obj1.getClass()));
 					jsonObj1.put(field.getName(), toJson(obj1));	
 //	            jsonObj1.put(field.getName(), toJson(obj1);	
  //            jsonArray.put(toJson(field.getName(), field.get(obj)));
@@ -125,26 +127,26 @@ public class Util {
   }
   
     public static Object fromJson(Object obj, String name, String field) {
-    	Log.d(TAG, "HERE 1: " + obj);
+//    	Log.d(TAG, "HERE 1: " + obj);
     	if (obj == null)
     		return null;
-    	Log.d(TAG, "Object not null");
+ //   	Log.d(TAG, "Object not null");
     	
     	if (obj.getClass().isPrimitive() || isWrapperType(obj.getClass())) {
     		return obj;
     	}
-    	Log.d(TAG, "Object not primitive");
+//    	Log.d(TAG, "Object not primitive");
 
     	if (obj instanceof JSONArray) {
 //    		JSONArray arr = (JSONArray) obj;
 //    		Array.newInstance(field.g, size)
             return null;
     	}
-    	Log.d(TAG, "Object not a JSON Array");
+//    	Log.d(TAG, "Object not a JSON Array");
 
     	//Complex object
     	if (obj instanceof JSONObject) {
-        	Log.d(TAG, "Object is JSON");
+//        	Log.d(TAG, "Object is JSON");
     		
     		JSONObject jsonObj = (JSONObject) obj;
     		Object obj1 = null;
@@ -152,12 +154,12 @@ public class Util {
     			Iterator<String> keys = (Iterator<String>) jsonObj.keys();
     			while (keys.hasNext()) {
     				String className = keys.next();
-    		    	Log.d(TAG, "Classname is: " + className);
+  //  		    	Log.d(TAG, "Classname is: " + className);
     				
     			    obj1 = Class.forName(className).newInstance(); 
-    			    Log.d(TAG, "Class.forName(className): " + Class.forName(className).getName());
-    			    Log.d(TAG, "obj1 instance of GameObject: " + (obj1 instanceof Obj));
-    			    Log.d(TAG, "Object class is: " + ((Object)(new Obj())).getClass());
+ //   			    Log.d(TAG, "Class.forName(className): " + Class.forName(className).getName());
+ //   			    Log.d(TAG, "obj1 instance of GameObject: " + (obj1 instanceof Obj));
+ //   			    Log.d(TAG, "Object class is: " + ((Object)(new Obj())).getClass());
         	    		Field[] fields = obj1.getClass().getFields();
 //    			        Field[] fields = GameObject.class.getFields();
         	    		Log.d(TAG, "Fields length is: " + fields.length);
@@ -167,27 +169,28 @@ public class Util {
         	    			
 		                   fieldsHash.put(field1.getName(), field1);
     			    }
+        	    	Log.d(TAG, "ASLAI HERE: " + jsonObj.get(className));
         	    	JSONObject jsonObj2 = (JSONObject) jsonObj.get(className);
         	    	Iterator<String> keys2 = (Iterator<String>) jsonObj2.keys(); 
         	    	while (keys2.hasNext()) {
         	    		Field field3 = null;
         	    		String key3 = keys2.next();
-        	        	Log.d(TAG, "variable name is: " + key3);
+  //      	        	Log.d(TAG, "variable name is: " + key3);
         	    		
         	    		field3 = fieldsHash.get(key3);
         	    		if (field3 != null) {
-            	        	Log.d(TAG, "field match found: " + key3 + "||" + field3.getType().getName());
-            	        	Log.d(TAG, "instanceOf Array: " + (field3.getType().isArray()));
+  //          	        	Log.d(TAG, "field match found: " + key3 + "||" + field3.getType().getName());
+  //          	        	Log.d(TAG, "instanceOf Array: " + (field3.getType().isArray()));
                             if (field3.getType().isArray()) {
                             	JSONArray jsonArr = (JSONArray) jsonObj2.get(key3);
                             	if (jsonArr != null) {
 
 //                              	  Object arr = Array.newInstance(Class.forName("java.lang.String"), jsonArr.length());                            		
                             	  Object arr = Array.newInstance(field3.getType().getComponentType(), jsonArr.length());
-                            	  Log.d(TAG, "arr is of type: " + arr.getClass());
+  //                          	  Log.d(TAG, "arr is of type: " + arr.getClass());
                             	  for (int i = 0; i < jsonArr.length(); i++) {
                             		  Object objTmp = fromJson(jsonArr.get(i), null, null);
-                            		  Log.d(TAG, "Object retured of class: " + objTmp.getClass());
+    //                        		  Log.d(TAG, "Object retured of class: " + objTmp.getClass());
     //                          		  Array.set(arr, i, "333");          
 
                             		  Array.set(arr, i, fromJson(jsonArr.get(i), null, null));
@@ -199,7 +202,7 @@ public class Util {
                             }
 
         	    	} else {
-        	        	Log.d(TAG, "field NO MATCH: " + key3);
+  //      	        	Log.d(TAG, "field NO MATCH: " + key3);
         	    		
         	    	}
         	    	
@@ -222,7 +225,17 @@ public class Util {
 		StringBuffer content = new StringBuffer();
 
 		DefaultHttpClient httpclient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(path);
+//		HttpDelete httpDelete = new HttpDelete(path);
+		HttpGet httpGet = new HttpGet(path+ "?format=json");
+//		httpclient.set
+//		StringEntity se = new StringEntity(holder.toString());
+//		httpost.setEntity(se);
+		Log.d(TAG, "HERE HERE path is " + path + " port is: " + httpGet.getURI());
+		BasicHttpParams httpParams = new BasicHttpParams();
+		httpParams.setParameter("format", "json");
+		httpParams.setParameter("testing", "123");
+		httpGet.setParams(httpParams);
+		
 		/*
 		Iterator iter = params.entrySet().iterator();
 
@@ -260,6 +273,11 @@ public class Util {
 		}
 			*/
 		try {
+//			HttpResponse response = httpGet.
+//            HttpPost httppost = new HttpPost("test");
+//            httppost.sethe
+//			httpGet.setHeader("Accept", "application/json");
+//			httpGet.setHeader("Content-type", "application/json");			
 			HttpResponse response = httpclient.execute(httpGet);
 			InputStream is = response.getEntity().getContent();
 			BufferedReader sr = new BufferedReader(new InputStreamReader(is));

@@ -47,6 +47,7 @@ public class GamingService extends Service implements LocationListener {
 //	public static final String BROADCAST_ACTION=
 //		"edu.stanford.cs.gaming.sdk.Event";
 //	private Intent broadcast=new Intent(BROADCAST_ACTION);	
+	public static String gamingServer = "http://98.210.19.161:3000";
 	private Timer timer = new Timer();
 	ArrayList<Intent> intentArr = new ArrayList<Intent>();
 	String testString = new String();
@@ -151,6 +152,26 @@ public class GamingService extends Service implements LocationListener {
 
 			return;
 		}
+		
+		public boolean hasPendingNotification(int appId) throws RemoteException {
+			return !appHash.get(appId).responseQ.isEmpty();
+		}
+
+		public String getNextPendingNotification(int appId) throws RemoteException {
+			if (!appHash.get(appId).responseQ.isEmpty()) {
+				Object object = null;
+				try {
+					object = appHash.get(appId).responseQ.take();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+//				Object object = appHash.get(appId).responseQ.remove(0);
+				Log.d("GamingRemoteServiceStub", "nextTask returned is: \n" + object);
+				return Util.toJson(object).toString();
+			}
+			return null;
+		} 		
 	};
 	public GamingService() {
 		/*
@@ -252,7 +273,7 @@ public class GamingService extends Service implements LocationListener {
                 
 			} 
 
-			}, 0, 5000);
+			}, 0, 30000);
 
 	}
 	/*

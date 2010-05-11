@@ -5,12 +5,15 @@ public class AppRequest {
 	public int app_id;
 	public String app_api_key;
 	public String action;
+	public String model;
+	public String path;
 	public Object object;
 	public Criterion[] criteria;
 	public AppRequest() {
 		
 	}
-	public AppRequest(int app_id, String app_api_key) {
+	public AppRequest(int id, int app_id, String app_api_key) {
+		this.id = id;
 		this.app_id = app_id;
 		this.app_api_key = app_api_key;
 	}
@@ -22,6 +25,7 @@ public class AppRequest {
 		str += "App id: " + app_id + "\n";
 		str += "App api key: " + app_api_key + "\n";
 		str += "Action: " + action + "\n";
+		str += "Path: " + path + "\n";		
 		str += "Object: " + object + "\n";
 		str += "===================================\n";
 		return str;

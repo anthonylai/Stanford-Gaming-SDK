@@ -120,6 +120,26 @@ reply.writeNoException();
 reply.writeInt(((_result)?(1):(0)));
 return true;
 }
+case TRANSACTION_hasPendingNotification:
+{
+data.enforceInterface(DESCRIPTOR);
+int _arg0;
+_arg0 = data.readInt();
+boolean _result = this.hasPendingNotification(_arg0);
+reply.writeNoException();
+reply.writeInt(((_result)?(1):(0)));
+return true;
+}
+case TRANSACTION_getNextPendingNotification:
+{
+data.enforceInterface(DESCRIPTOR);
+int _arg0;
+_arg0 = data.readInt();
+java.lang.String _result = this.getNextPendingNotification(_arg0);
+reply.writeNoException();
+reply.writeString(_result);
+return true;
+}
 }
 return super.onTransact(code, data, reply, flags);
 }
@@ -276,6 +296,42 @@ _data.recycle();
 }
 return _result;
 }
+public boolean hasPendingNotification(int appId) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+boolean _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeInt(appId);
+mRemote.transact(Stub.TRANSACTION_hasPendingNotification, _data, _reply, 0);
+_reply.readException();
+_result = (0!=_reply.readInt());
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
+public java.lang.String getNextPendingNotification(int appId) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+java.lang.String _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeInt(appId);
+mRemote.transact(Stub.TRANSACTION_getNextPendingNotification, _data, _reply, 0);
+_reply.readException();
+_result = _reply.readString();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
 }
 static final int TRANSACTION_getCounter = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
 static final int TRANSACTION_getLocationString = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
@@ -285,6 +341,8 @@ static final int TRANSACTION_putGameObject = (android.os.IBinder.FIRST_CALL_TRAN
 static final int TRANSACTION_getNextCompletedTask = (android.os.IBinder.FIRST_CALL_TRANSACTION + 5);
 static final int TRANSACTION_removeApp = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
 static final int TRANSACTION_sendRequest = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
+static final int TRANSACTION_hasPendingNotification = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
+static final int TRANSACTION_getNextPendingNotification = (android.os.IBinder.FIRST_CALL_TRANSACTION + 9);
 }
 public int getCounter() throws android.os.RemoteException;
 public java.lang.String getLocationString() throws android.os.RemoteException;
@@ -294,4 +352,6 @@ public void putGameObject(java.lang.String gameObjJsonStr) throws android.os.Rem
 public java.lang.String getNextCompletedTask(int appId) throws android.os.RemoteException;
 public boolean removeApp(int appId) throws android.os.RemoteException;
 public boolean sendRequest(int appId, java.lang.String request) throws android.os.RemoteException;
+public boolean hasPendingNotification(int appId) throws android.os.RemoteException;
+public java.lang.String getNextPendingNotification(int appId) throws android.os.RemoteException;
 }

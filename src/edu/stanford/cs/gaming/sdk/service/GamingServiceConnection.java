@@ -1,4 +1,9 @@
 package edu.stanford.cs.gaming.sdk.service;
+import java.util.ArrayList;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import edu.stanford.cs.gaming.sdk.model.*;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -23,6 +28,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	private BroadcastReceiver receiver;
 	private int appId;
 	private String appApiKey;
+	private int userId;
 	public GamingServiceConnection(Activity activity, BroadcastReceiver receiver, 
 			int appId, String appApiKey) {
 		this.activity = activity;
@@ -106,19 +112,82 @@ public class GamingServiceConnection implements ServiceConnection  {
 	   return true;
 
 	}
+	/* aslai Don't think this is needed
+	public boolean hasPendingNotifications() {
+		return true;
+//		return grs.hasPendingNotification(appId);
+	}
+	*/
+	public AppResponse getNextPendingNotification() throws RemoteException, JSONException {
+		String response = grs.getNextPendingNotification(appId);
+		if (response != null)
+		  return (AppResponse) Util.fromJson(new JSONObject(response), null, null);
+		return null;
+	}
 	public boolean testRequest(AppRequest request) {
 		Util.toJson(request);
 		return true;
 	}
-	public boolean registerUser(User user) {
+	public void setUserId(int userId)  {
+		this.userId = userId;
+	}
+	public boolean registerUser(int request_id, User user) throws RemoteException {
 	  return true;
 	}
 	
-	public boolean getInvitableFriends() {
+	public boolean getInvitableFriends(int request_id) throws RemoteException {
 		return true;
 	}
 	
-    public boolean getFriends() {
+    public boolean getFriends(int request_id) throws RemoteException {
+    	return true;
+    }
+    public boolean createGroup(int request_id, Group group) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey);
+    	appRequest.action = "post";
+    	appRequest.model = "Group";
+    	appRequest.path = "/groups/";
+    	appRequest.object = group;
+    	Log.d(TAG, "GROUP IN JSON IS: " + Util.toJson(appRequest));
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;    	
+    }
+    public boolean getGroups(int request_id, String name, int user_id,
+    		int limit, int rowsRet) 
+    throws RemoteException {
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey);
+    	appRequest.action = "get";
+    	appRequest.model = "Group";    	
+    	appRequest.path = "/groups";
+    	ArrayList<Criterion> criteriaList = new ArrayList<Criterion>();
+    	if (name != null) criteriaList.add(new Criterion("name", name));
+    	if (user_id != -1) criteriaList.add(new Criterion("user_id", ""+user_id));
+    	if (limit != -1) criteriaList.add(new Criterion("limit", ""+limit));
+    	if (rowsRet != -1) criteriaList.add(new Criterion("rowsRet", ""+rowsRet));
+    	int count = 0;
+    	if ((count = criteriaList.size()) > 0)
+    		appRequest.criteria = new Criterion[count];        
+    	for (int i = 0; i < count; i++) {
+    		appRequest.criteria[i] = criteriaList.remove(0);
+    	}
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;
+    }
+    public boolean getGroup(int request_id, int group_id) 
+    throws RemoteException {
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey);
+    	appRequest.action = "get";
+    	appRequest.model = "Group";
+    	appRequest.path = "/groups/" + group_id;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;
+    }    
+    public boolean deleteGroup(int request_id, int group_id) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey);
+    	appRequest.action = "delete";
+    	appRequest.model = "Group";
+    	appRequest.path = "/groups/" + group_id;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;
     }
     

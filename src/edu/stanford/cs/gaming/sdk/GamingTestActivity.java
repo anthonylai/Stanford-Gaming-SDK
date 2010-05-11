@@ -3,8 +3,7 @@ package edu.stanford.cs.gaming.sdk;
 import org.json.JSONObject;
 
 import edu.stanford.cs.gaming.sdk.model.AppRequest;
-import edu.stanford.cs.gaming.sdk.model.Obj;
-import edu.stanford.cs.gaming.sdk.model.User;
+import edu.stanford.cs.gaming.sdk.model.*;
 import edu.stanford.cs.gaming.sdk.service.*;
 
 import android.app.Activity;
@@ -43,6 +42,7 @@ public class GamingTestActivity extends Activity {
         bindButton.setOnClickListener(new OnClickListener() {
           	public void onClick(View v){
           		gameConn.bind();
+                gameConn.setUserId(1);          		
           	}});
         Button unbindButton = (Button) findViewById(R.id.UnbindButton);
         unbindButton.setOnClickListener(new OnClickListener() {
@@ -60,9 +60,13 @@ public class GamingTestActivity extends Activity {
 //						gameConn.grs.putGameObject(Util.toJson(new GameObject("Test" + (counter++))).toString());
 //						Log.d(TAG, "USER OBJECT JSON IS" + Util.toJson(new User()).toString());
 //						gameConn.grs.putGameObject(Util.toJson(new User()).toString());
-						AppRequest appRequest = new AppRequest(1, "");
-						Log.d(TAG, "Request sent is: " + appRequest);
-						gameConn.grs.sendRequest(1, Util.toJson(appRequest).toString());
+//						AppRequest appRequest = new AppRequest(1, 1, "");
+//						Log.d(TAG, "Request sent is: " + appRequest);
+//						gameConn.grs.sendRequest(1, Util.toJson(appRequest).toString());
+						gameConn.createGroup(1, new Group("Test Group"));
+//						gameConn.getGroup(2, 1);
+//						gameConn.getGroups(3, "Test Group", -1, -1, -1);
+//						gameConn.deleteGroup(4, 1);
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -86,10 +90,17 @@ public class GamingTestActivity extends Activity {
 					Log.d(TAG, "GameReceiver Counter is: " + gameConn.grs.getCounter());
 					tv.append("Counter is: " + gameConn.grs.getCounter() + "\n");
 					String str = null;
+					/*
 					while ((str = gameConn.grs.getNextCompletedTask(1)) != null) {
 						Log.d(TAG, "Task completion received");
 						tv.append(Util.fromJson(new JSONObject(str), null, null).toString() + "\n");
 					}
+					*/
+					AppResponse appResponse = null;
+					while ((appResponse = gameConn.getNextPendingNotification()) != null) {
+						Log.d(TAG, "Task completion received");
+						tv.append(appResponse.toString() + "\n");
+					}					
 //					tv.append("Location is: " + logger.getLocationString() + "\n");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
