@@ -143,11 +143,12 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;
     }
     public boolean createGroup(int request_id, Group group) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey);
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId);
     	appRequest.action = "post";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/";
     	appRequest.object = group;
+    	group.app_id = appId;
     	Log.d(TAG, "GROUP IN JSON IS: " + Util.toJson(appRequest));
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;    	
@@ -155,7 +156,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     public boolean getGroups(int request_id, String name, int user_id,
     		int limit, int rowsRet) 
     throws RemoteException {
-    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey);
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId);
     	appRequest.action = "get";
     	appRequest.model = "Group";    	
     	appRequest.path = "/groups";
@@ -175,7 +176,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     }
     public boolean getGroup(int request_id, int group_id) 
     throws RemoteException {
-    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey);
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId);
     	appRequest.action = "get";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/" + group_id;
@@ -183,7 +184,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;
     }    
     public boolean deleteGroup(int request_id, int group_id) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey);
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId);
     	appRequest.action = "delete";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/" + group_id;

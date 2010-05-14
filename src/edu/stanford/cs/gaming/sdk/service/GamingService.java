@@ -47,7 +47,7 @@ public class GamingService extends Service implements LocationListener {
 //	public static final String BROADCAST_ACTION=
 //		"edu.stanford.cs.gaming.sdk.Event";
 //	private Intent broadcast=new Intent(BROADCAST_ACTION);	
-	public static String gamingServer = "http://98.210.19.161:3000";
+	public static String gamingServer = "http://colby.stanford.edu:3000";
 	private Timer timer = new Timer();
 	ArrayList<Intent> intentArr = new ArrayList<Intent>();
 	String testString = new String();

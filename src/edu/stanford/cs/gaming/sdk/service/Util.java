@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -18,6 +19,8 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -26,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.stanford.cs.gaming.sdk.model.AppRequest;
 import edu.stanford.cs.gaming.sdk.model.Obj;
 
 import android.util.Log;
@@ -162,14 +166,14 @@ public class Util {
  //   			    Log.d(TAG, "Object class is: " + ((Object)(new Obj())).getClass());
         	    		Field[] fields = obj1.getClass().getFields();
 //    			        Field[] fields = GameObject.class.getFields();
-        	    		Log.d(TAG, "Fields length is: " + fields.length);
+//        	    		Log.d(TAG, "Fields length is: " + fields.length);
         	    		Hashtable<String, Field> fieldsHash = new Hashtable<String, Field>();
         	    		for (Field field1 : fields) {
-            	        	Log.d(TAG, "field inserted is: " + field1.getName());
+ //           	        	Log.d(TAG, "field inserted is: " + field1.getName());
         	    			
 		                   fieldsHash.put(field1.getName(), field1);
     			    }
-        	    	Log.d(TAG, "ASLAI HERE: " + jsonObj.get(className));
+//        	    	Log.d(TAG, "ASLAI HERE: " + jsonObj.get(className));
         	    	JSONObject jsonObj2 = (JSONObject) jsonObj.get(className);
         	    	Iterator<String> keys2 = (Iterator<String>) jsonObj2.keys(); 
         	    	while (keys2.hasNext()) {
@@ -220,6 +224,75 @@ public class Util {
     	
     	return null;
     }
+
+      public static String constructParams(AppRequest request) {
+       	  String str = request.path + "?format=json&request_id=" + request.id + "&app_id=" + request.app_id +
+       	  "&app_api_key=" + URLEncoder.encode(request.app_api_key);
+       	  if (request.user_id != 0) {
+           	 str += "&user_id=" + request.user_id;
+       	  }
+       	  if (request.object != null) {
+            str += "&object=" + URLEncoder.encode(Util.toJson(request.object).toString());
+       	  }
+			Log.d(TAG, "=====================================");
+			Log.d(TAG, "-------------------------------------");			
+            Log.d(TAG, "REQUEST SENT IS:");
+            Log.d(TAG, str);
+			Log.d(TAG, "-------------------------------------");			
+			Log.d(TAG, "=====================================");       	  
+          return str;
+ //   	  return "?testing=here&format=json&criterion={\"testvar\", "testvalue";
+    	  
+      }
+	  public static String makeRequest(AppRequest request) {
+		  StringBuffer content = new StringBuffer();
+		  try {
+			HttpRequestBase hrb = null;			
+
+			DefaultHttpClient httpclient = new DefaultHttpClient();
+		
+			if ("get".equals(request.action)) {
+				hrb = new HttpGet(GamingService.gamingServer + constructParams(request));
+				
+			} else if ("put".equals(request.action)) {
+				hrb = new HttpPut(GamingService.gamingServer + constructParams(request));
+			} else if ("delete".equals(request.action)) {
+				hrb = new HttpDelete(GamingService.gamingServer + constructParams(request));
+			} else if ("post".equals(request.action)) {
+				hrb = new HttpPost(GamingService.gamingServer + constructParams(request));	
+			}
+			
+			BasicHttpParams httpParams = new BasicHttpParams();
+			httpParams.setParameter("request_id", request.id);
+			httpParams.setParameter("app_id", request.app_id);
+			httpParams.setParameter("app_api_key", request.app_api_key);
+			httpParams.setParameter("user_id", request.user_id);
+			hrb.setParams(httpParams);	
+            httpclient.setParams(httpParams);
+            Log.d(TAG, "HTTPPARAMS IS: " + httpParams);
+			HttpResponse response = httpclient.execute(hrb);
+			InputStream is = response.getEntity().getContent();
+			BufferedReader sr = new BufferedReader(new InputStreamReader(is));
+			String line = "";
+			while ((line = sr.readLine()) != null) {
+					content.append(line);
+			}
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Log.d(TAG, "=====================================");
+			Log.d(TAG, "-------------------------------------");			
+            Log.d(TAG, "RESPONSE RECEIVED IS:");
+            Log.d(TAG, content.toString());
+			Log.d(TAG, "-------------------------------------");	
+			Log.d(TAG, "=====================================");
+			
+			return content.toString();		  
+	  }    
     
 	public static String makeGet(String path) { //, Map params) {
 		StringBuffer content = new StringBuffer();
@@ -297,7 +370,7 @@ public class Util {
 		}
 		return content.toString();
 		}
-			
+			/*
 		public static String makeRequest(String path, Map params)
 		throws Exception {
 
@@ -330,7 +403,7 @@ public class Util {
 		Object response = httpclient.execute(httpost, responseHandler);
 		return "done";
 		}
-    
+    */
   
   /*
   public static Object toJson(String name, Object obj) {

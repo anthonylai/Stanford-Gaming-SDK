@@ -51,9 +51,11 @@ public class App {
 				  response.request_id = request.id;
 				  response.appRequest = request;
 				  try {
-					  Log.d(tag, "Group returned is: " + Util.makeGet(gamingService.gamingServer + "/groups/1"));
-					response.object = Util.fromJson(new JSONObject(Util.makeGet(gamingService.gamingServer + "/groups/1")), null, null);
-				} catch (JSONException e) {
+//					  Log.d(tag, "Group returned is: " + Util.makeGet(gamingService.gamingServer + "/groups/1"));
+//					response.object = Util.fromJson(new JSONObject(Util.makeGet(gamingService.gamingServer + "/groups/1")), null, null);
+						response.object = Util.fromJson(new JSONObject(Util.makeRequest(request)), null, null);
+
+				  } catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -66,7 +68,6 @@ public class App {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	  }
-	  
+	  }	  
   }
 }

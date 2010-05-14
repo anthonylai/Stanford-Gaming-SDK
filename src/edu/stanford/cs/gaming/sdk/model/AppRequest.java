@@ -4,6 +4,7 @@ public class AppRequest {
 	public int id;
 	public int app_id;
 	public String app_api_key;
+	public int user_id;
 	public String action;
 	public String model;
 	public String path;
@@ -12,10 +13,11 @@ public class AppRequest {
 	public AppRequest() {
 		
 	}
-	public AppRequest(int id, int app_id, String app_api_key) {
+	public AppRequest(int id, int app_id, String app_api_key, int user_id) {
 		this.id = id;
 		this.app_id = app_id;
 		this.app_api_key = app_api_key;
+		this.user_id = user_id;
 	}
 	
 	public String toString() {
