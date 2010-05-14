@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.stanford.cs.gaming.sdk.model.AppRequest;
+import edu.stanford.cs.gaming.sdk.model.Criterion;
 import edu.stanford.cs.gaming.sdk.model.Obj;
 
 import android.util.Log;
@@ -230,6 +231,18 @@ public class Util {
     	return null;
     }
 
+      public static JSONObject criteriaToJsonStr(Criterion[] criteria) {
+    	  JSONObject json = new JSONObject();
+    	  try {
+    	  for (int i = 0; i < criteria.length; i++) {
+    		  json.put(criteria[i].parameter, criteria[i].value);
+    	  }
+    	  } catch (Exception e) {
+    		  e.printStackTrace();
+    	  }
+    	  return json;
+      }
+      //ASLAI: Add error handling if issues with network, possible tell user to enable internet access
       public static String constructParams(AppRequest request) {
        	  String str = request.path + "?format=json&request_id=" + request.id + "&app_id=" + request.app_id +
        	  "&app_api_key=" + URLEncoder.encode(request.app_api_key);
@@ -239,6 +252,8 @@ public class Util {
        	  if (request.object != null) {
             str += "&object=" + URLEncoder.encode(Util.toJson(request.object).toString());
        	  }
+       	  if (request.criteria != null && request.criteria.length > 0)
+       		  str += "&criteria=" + URLEncoder.encode(criteriaToJsonStr(request.criteria).toString());
 			Log.d(TAG, "=====================================");
 			Log.d(TAG, "-------------------------------------");			
             Log.d(TAG, "REQUEST SENT IS:");

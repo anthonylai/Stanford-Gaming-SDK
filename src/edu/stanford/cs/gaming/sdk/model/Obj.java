@@ -1,8 +1,5 @@
 package edu.stanford.cs.gaming.sdk.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class Obj {
 	public int id;
 	public int app_id;

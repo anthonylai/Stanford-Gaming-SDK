@@ -11,6 +11,7 @@ public class AppRequest {
 	public Object object;
 	public Criterion[] criteria;
 	public String intentFilterEvent;
+	public Object reference;
 	public AppRequest() {
 		
 	}
