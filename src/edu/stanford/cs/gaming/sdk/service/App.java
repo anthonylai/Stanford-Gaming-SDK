@@ -60,8 +60,11 @@ public class App {
 					e.printStackTrace();
 				}
 //				  response.object = request;
+				  
+				  //ASLAI: PUT THEM INTO SEPARATE QUEUES
 				  responseQ.put(response);
-  		          gamingService.sendBroadcast(intent);
+				  Log.d(tag, "INTENTFILTEREVENT IS: " + request.intentFilterEvent);
+  		          gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
 				  
 			  }
 		} catch (InterruptedException e) {

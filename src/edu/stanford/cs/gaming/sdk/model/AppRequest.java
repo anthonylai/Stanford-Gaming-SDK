@@ -10,14 +10,16 @@ public class AppRequest {
 	public String path;
 	public Object object;
 	public Criterion[] criteria;
+	public String intentFilterEvent;
 	public AppRequest() {
 		
 	}
-	public AppRequest(int id, int app_id, String app_api_key, int user_id) {
+	public AppRequest(int id, int app_id, String app_api_key, int user_id, String intentFilterEvent) {
 		this.id = id;
 		this.app_id = app_id;
 		this.app_api_key = app_api_key;
 		this.user_id = user_id;
+		this.intentFilterEvent = intentFilterEvent;
 	}
 	
 	public String toString() {

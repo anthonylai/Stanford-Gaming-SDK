@@ -131,6 +131,7 @@ public class Util {
   }
   
     public static Object fromJson(Object obj, String name, String field) {
+    	Object objTmp = null;
 //    	Log.d(TAG, "HERE 1: " + obj);
     	if (obj == null)
     		return null;
@@ -193,7 +194,7 @@ public class Util {
                             	  Object arr = Array.newInstance(field3.getType().getComponentType(), jsonArr.length());
   //                          	  Log.d(TAG, "arr is of type: " + arr.getClass());
                             	  for (int i = 0; i < jsonArr.length(); i++) {
-                            		  Object objTmp = fromJson(jsonArr.get(i), null, null);
+ //                           		  Object objTmp = fromJson(jsonArr.get(i), null, null);
     //                        		  Log.d(TAG, "Object retured of class: " + objTmp.getClass());
     //                          		  Array.set(arr, i, "333");          
 
@@ -201,8 +202,12 @@ public class Util {
                             	  }
                             	  field3.set(obj1, arr);
                             	}
-                            } else {
-							field3.set(obj1, fromJson(jsonObj2.get(key3), null, null));
+                            } else {                            	
+                            	if ((objTmp = fromJson(jsonObj2.get(key3), null, null)) != null && field3 != null) {
+                                	Log.d(TAG, "FIELD3 is " + field3.getName());
+                                	Log.d(TAG, "VALUE is " + objTmp);                		
+							        field3.set(obj1, objTmp);
+                            	}
                             }
 
         	    	} else {

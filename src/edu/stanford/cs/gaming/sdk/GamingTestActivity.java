@@ -37,7 +37,7 @@ public class GamingTestActivity extends Activity {
         receiver = new GameReceiver();
         setContentView(R.layout.main); 
         tv = (TextView) findViewById(R.id.TextView01);
-        gameConn = new GamingServiceConnection(this, receiver, 1, "");
+        gameConn = new GamingServiceConnection(this, receiver, 1, "", "TestActivity");
         Button bindButton = (Button) findViewById(R.id.BindButton);
         bindButton.setOnClickListener(new OnClickListener() {
           	public void onClick(View v){

@@ -29,14 +29,22 @@ public class GamingServiceConnection implements ServiceConnection  {
 	private int appId;
 	private String appApiKey;
 	private int userId;
+	private String intentFilterEvent;
 	public GamingServiceConnection(Activity activity, BroadcastReceiver receiver, 
-			int appId, String appApiKey) {
+			int appId, String appApiKey, String intentFilterEvent) {
 		this.activity = activity;
 //        this.intent = new Intent(activity, GamingService.class);	
 		this.intent = new Intent("edu.stanford.cs.gaming.sdk.service");
         this.receiver = receiver;
         this.appId = appId;
         this.appApiKey = appApiKey;
+        this.intentFilterEvent = intentFilterEvent;
+        if (intentFilterEvent == null) {
+        	this.intentFilterEvent = "edu.stanford.cs.gaming.sdk." + appId + ".Event";
+        } else {
+        	this.intentFilterEvent = "edu.stanford.cs.gaming.sdk." + appId + "." + intentFilterEvent;       	
+            Log.d(TAG, "Receiver INTENTFILTEREVENT IS "+ this.intentFilterEvent);
+        }
 	}
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
@@ -47,8 +55,9 @@ public class GamingServiceConnection implements ServiceConnection  {
 			try {
 				grs.addApp(appId, appApiKey);
 //				try {
-					activity.registerReceiver(receiver, new IntentFilter("edu.stanford.cs.gaming.sdk." + appId + ".Event"));
-//				} catch (MalformedMimeTypeException e) {
+					activity.registerReceiver(receiver, new IntentFilter(intentFilterEvent));
+
+				//				} catch (MalformedMimeTypeException e) {
 
 //					e.printStackTrace();
 //				}					
@@ -140,10 +149,11 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 	
     public boolean getFriends(int request_id) throws RemoteException {
+    	
     	return true;
     }
     public boolean createGroup(int request_id, Group group) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId);
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/";
@@ -156,7 +166,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     public boolean getGroups(int request_id, String name, int user_id,
     		int limit, int rowsRet) 
     throws RemoteException {
-    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId);
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Group";    	
     	appRequest.path = "/groups";
@@ -176,7 +186,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     }
     public boolean getGroup(int request_id, int group_id) 
     throws RemoteException {
-    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId);
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/" + group_id;
@@ -184,7 +194,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;
     }    
     public boolean deleteGroup(int request_id, int group_id) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId);
+    	AppRequest appRequest = new AppRequest(request_id, appId, appApiKey, userId, intentFilterEvent);
     	appRequest.action = "delete";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/" + group_id;
