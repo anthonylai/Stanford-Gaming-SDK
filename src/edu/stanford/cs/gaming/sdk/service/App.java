@@ -62,10 +62,10 @@ public class App {
 				  response.request_id = request.id;
 				  response.appRequest = request;				  
 //				  response.object = request;
-				  
+				  Log.d(tag, "RESPONSE RECEIVED FROM SERVER IS " + response);
 				  //ASLAI: PUT THEM INTO SEPARATE QUEUES
 				  responseQ.put(response);
-				  Log.d(tag, "INTENTFILTEREVENT IS: " + request.intentFilterEvent);
+				  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
   		          gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
 				  
 			  }

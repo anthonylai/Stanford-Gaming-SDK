@@ -63,7 +63,7 @@ public class GamingTestActivity extends Activity {
 //						AppRequest appRequest = new AppRequest(1, 1, "");
 //						Log.d(TAG, "Request sent is: " + appRequest);
 //						gameConn.grs.sendRequest(1, Util.toJson(appRequest).toString());
-						gameConn.createGroup(1, new Group("Test Group 12345"));
+						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);
 //						gameConn.getGroups(3, "Test Group", -1, -1, -1);
 //						gameConn.deleteGroup(4, 1);
@@ -102,8 +102,8 @@ public class GamingTestActivity extends Activity {
 						tv.append(appResponse.toString() + "\n");
 						Log.d(TAG, "APP RESPONSE IS:" + appResponse);
 						
-						Log.d(TAG, "OBJ IS: " + ((AppResponse) appResponse.object).object.getClass());						
-						Log.d(TAG, "OBJ IS: " + ((AppResponse) appResponse.object).object);
+						Log.d(TAG, "OBJ IS: " + appResponse.object.getClass());						
+						Log.d(TAG, "OBJ IS: " + appResponse.object);
 					}					
 //					tv.append("Location is: " + logger.getLocationString() + "\n");
 				} catch (Exception e) {
