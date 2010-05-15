@@ -205,8 +205,8 @@ public class Util {
                             	}
                             } else {                            	
                             	if ((objTmp = fromJson(jsonObj2.get(key3), null, null)) != null && field3 != null) {
-                                	Log.d(TAG, "FIELD3 is " + field3.getName());
-                                	Log.d(TAG, "VALUE is " + objTmp);                		
+//                                	Log.d(TAG, "FIELD3 is " + field3.getName());
+//                                	Log.d(TAG, "VALUE is " + objTmp);                		
 							        field3.set(obj1, objTmp);
                             	}
                             }
@@ -242,7 +242,7 @@ public class Util {
     	  }
     	  return json;
       }
-      //ASLAI: Add error handling if issues with network, possible tell user to enable internet access
+      //ASLAI: Add error handling if issues with network, possibly tell user to enable internet access
       public static String constructParams(AppRequest request) {
        	  String str = request.path + "?format=json&request_id=" + request.id + "&app_id=" + request.app_id +
        	  "&app_api_key=" + URLEncoder.encode(request.app_api_key);
@@ -281,7 +281,7 @@ public class Util {
 			} else if ("post".equals(request.action)) {
 				hrb = new HttpPost(GamingService.gamingServer + constructParams(request));	
 			}
-			
+/*			
 			BasicHttpParams httpParams = new BasicHttpParams();
 			httpParams.setParameter("request_id", request.id);
 			httpParams.setParameter("app_id", request.app_id);
@@ -290,6 +290,7 @@ public class Util {
 			hrb.setParams(httpParams);	
             httpclient.setParams(httpParams);
             Log.d(TAG, "HTTPPARAMS IS: " + httpParams);
+*/
 			HttpResponse response = httpclient.execute(hrb);
 			InputStream is = response.getEntity().getContent();
 			BufferedReader sr = new BufferedReader(new InputStreamReader(is));

@@ -47,18 +47,20 @@ public class App {
 				  AppRequest request = requestQ.take();
 				  Log.d(tag, "Request received is: " + request);
 //				  sleep(2000);
-				  AppResponse response = new AppResponse();
-				  response.request_id = request.id;
-				  response.appRequest = request;
+//				  AppResponse response = new AppResponse();
+				  AppResponse response = null;
 				  try {
 //					  Log.d(tag, "Group returned is: " + Util.makeGet(gamingService.gamingServer + "/groups/1"));
 //					response.object = Util.fromJson(new JSONObject(Util.makeGet(gamingService.gamingServer + "/groups/1")), null, null);
-						response.object = Util.fromJson(new JSONObject(Util.makeRequest(request)), null, null);
+//						response.object = Util.fromJson(new JSONObject(Util.makeRequest(request)), null, null);
+						response = (AppResponse) Util.fromJson(new JSONObject(Util.makeRequest(request)), null, null);					  
 
 				  } catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				  response.request_id = request.id;
+				  response.appRequest = request;				  
 //				  response.object = request;
 				  
 				  //ASLAI: PUT THEM INTO SEPARATE QUEUES

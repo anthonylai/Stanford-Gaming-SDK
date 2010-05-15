@@ -75,14 +75,14 @@ public class GamingServiceConnection implements ServiceConnection  {
 	public void onServiceDisconnected(ComponentName name) {
 		Log.d(TAG, "Service disconnectiong");
 		
-		try {
-			grs.removeApp(appId);
+//		try {
+//			grs.removeApp(appId);
 			grs=null;	
 			connected = false;				
-		} catch (RemoteException e) {
+//		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//			e.printStackTrace();
+//		}
 	
 		
 	}
