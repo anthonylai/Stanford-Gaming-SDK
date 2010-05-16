@@ -19,6 +19,8 @@ import android.os.RemoteException;
 import android.util.Log;
 
 public class GamingServiceConnection implements ServiceConnection  {
+	public static final String RESULT_CODE_ERROR = "error";
+	public static final String RESULT_CODE_SUCCESS = "success";	
     public boolean connected = false;
 	private static final String TAG = "GamingServiceConnection";	
 	public static GamingRemoteService grs;

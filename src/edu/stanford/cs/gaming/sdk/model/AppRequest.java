@@ -25,14 +25,14 @@ public class AppRequest {
 	
 	public String toString() {
 		String str = "";
-		str = "\n===================================\n";
+		str = "\n===============\n";
 		str += "Request id: " + id + "\n";
 		str += "App id: " + app_id + "\n";
 		str += "App api key: " + app_api_key + "\n";
 		str += "Action: " + action + "\n";
 		str += "Path: " + path + "\n";		
 		str += "Object: " + object + "\n";
-		str += "===================================\n";
+		str += "================\n";
 		return str;
 		
 	}

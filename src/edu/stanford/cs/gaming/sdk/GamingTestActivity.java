@@ -63,7 +63,8 @@ public class GamingTestActivity extends Activity {
 //						AppRequest appRequest = new AppRequest(1, 1, "");
 //						Log.d(TAG, "Request sent is: " + appRequest);
 //						gameConn.grs.sendRequest(1, Util.toJson(appRequest).toString());
-						gameConn.createGroup(1, new Group("Test Group 0000000"));
+						gameConn.getGroups(2, "firstgroup", 1, 0, 5);						
+//						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);
 //						gameConn.getGroups(3, "Test Group", -1, -1, -1);
 //						gameConn.deleteGroup(4, 1);

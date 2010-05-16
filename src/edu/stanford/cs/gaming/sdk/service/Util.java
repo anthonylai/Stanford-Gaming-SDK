@@ -133,10 +133,10 @@ public class Util {
   
     public static Object fromJson(Object obj, String name, String field) {
     	Object objTmp = null;
-//    	Log.d(TAG, "HERE 1: " + obj);
+//    	Log.d(TAG, "HERE 1: " + ":" + obj.getClass() + obj );
     	if (obj == null)
     		return null;
- //   	Log.d(TAG, "Object not null");
+//    	Log.d(TAG, "Object not null");
     	
     	if (obj.getClass().isPrimitive() || isWrapperType(obj.getClass())) {
     		return obj;
@@ -144,9 +144,25 @@ public class Util {
 //    	Log.d(TAG, "Object not primitive");
 
     	if (obj instanceof JSONArray) {
+    		JSONArray jsonArray = (JSONArray) obj; 
+    		if (jsonArray.length() ==0)
+    			return null;
+    		try {
+
+    		Object objToCheckType = fromJson(jsonArray.get(0), null, null);
+    		Object objArr = Array.newInstance(objToCheckType.getClass(), jsonArray.length());
+    		
+    		for (int i=0; i < jsonArray.length(); i++) {
+    			Array.set(objArr, i, fromJson(jsonArray.get(i), null, null));
+    		}    		
 //    		JSONArray arr = (JSONArray) obj;
 //    		Array.newInstance(field.g, size)
-            return null;
+            return objArr;
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    			return null;
+    		}
+    		
     	}
 //    	Log.d(TAG, "Object not a JSON Array");
 
@@ -160,43 +176,43 @@ public class Util {
     			Iterator<String> keys = (Iterator<String>) jsonObj.keys();
     			while (keys.hasNext()) {
     				String className = keys.next();
-  //  		    	Log.d(TAG, "Classname is: " + className);
+//    		    	Log.d(TAG, "Classname is: " + className);
     				
     			    obj1 = Class.forName(className).newInstance(); 
- //   			    Log.d(TAG, "Class.forName(className): " + Class.forName(className).getName());
- //   			    Log.d(TAG, "obj1 instance of GameObject: " + (obj1 instanceof Obj));
- //   			    Log.d(TAG, "Object class is: " + ((Object)(new Obj())).getClass());
+//    			    Log.d(TAG, "Class.forName(className): " + Class.forName(className).getName());
+//    			    Log.d(TAG, "obj1 instance of GameObject: " + (obj1 instanceof Obj));
+//    			    Log.d(TAG, "Object class is: " + ((Object)(new Obj())).getClass());
         	    		Field[] fields = obj1.getClass().getFields();
 //    			        Field[] fields = GameObject.class.getFields();
-//        	    		Log.d(TAG, "Fields length is: " + fields.length);
+//      	    		Log.d(TAG, "Fields length is: " + fields.length);
         	    		Hashtable<String, Field> fieldsHash = new Hashtable<String, Field>();
         	    		for (Field field1 : fields) {
- //           	        	Log.d(TAG, "field inserted is: " + field1.getName());
+//            	        	Log.d(TAG, "field inserted is: " + field1.getName());
         	    			
 		                   fieldsHash.put(field1.getName(), field1);
     			    }
-//        	    	Log.d(TAG, "ASLAI HERE: " + jsonObj.get(className));
+//       	    	Log.d(TAG, "ASLAI HERE: " + jsonObj.get(className));
         	    	JSONObject jsonObj2 = (JSONObject) jsonObj.get(className);
         	    	Iterator<String> keys2 = (Iterator<String>) jsonObj2.keys(); 
         	    	while (keys2.hasNext()) {
         	    		Field field3 = null;
         	    		String key3 = keys2.next();
-  //      	        	Log.d(TAG, "variable name is: " + key3);
+//      	        	Log.d(TAG, "variable name is: " + key3);
         	    		
         	    		field3 = fieldsHash.get(key3);
         	    		if (field3 != null) {
-  //          	        	Log.d(TAG, "field match found: " + key3 + "||" + field3.getType().getName());
-  //          	        	Log.d(TAG, "instanceOf Array: " + (field3.getType().isArray()));
+//           	        	Log.d(TAG, "field match found: " + key3 + "||" + field3.getType().getName());
+//           	        	Log.d(TAG, "instanceOf Array: " + (field3.getType().isArray()));
                             if (field3.getType().isArray()) {
                             	JSONArray jsonArr = (JSONArray) jsonObj2.get(key3);
                             	if (jsonArr != null) {
 
 //                              	  Object arr = Array.newInstance(Class.forName("java.lang.String"), jsonArr.length());                            		
                             	  Object arr = Array.newInstance(field3.getType().getComponentType(), jsonArr.length());
-  //                          	  Log.d(TAG, "arr is of type: " + arr.getClass());
+//                           	  Log.d(TAG, "arr is of type: " + arr.getClass());
                             	  for (int i = 0; i < jsonArr.length(); i++) {
  //                           		  Object objTmp = fromJson(jsonArr.get(i), null, null);
-    //                        		  Log.d(TAG, "Object retured of class: " + objTmp.getClass());
+//                          		  Log.d(TAG, "Object retured of class: " + objTmp.getClass());
     //                          		  Array.set(arr, i, "333");          
 
                             		  Array.set(arr, i, fromJson(jsonArr.get(i), null, null));
@@ -205,14 +221,14 @@ public class Util {
                             	}
                             } else {                            	
                             	if ((objTmp = fromJson(jsonObj2.get(key3), null, null)) != null && field3 != null) {
-//                                	Log.d(TAG, "FIELD3 is " + field3.getName());
-//                                	Log.d(TAG, "VALUE is " + objTmp);                		
+//                               	Log.d(TAG, "FIELD3 is " + field3.getName());
+//                               	Log.d(TAG, "VALUE is " + objTmp);                		
 							        field3.set(obj1, objTmp);
                             	}
                             }
 
         	    	} else {
-  //      	        	Log.d(TAG, "field NO MATCH: " + key3);
+      	        	Log.d(TAG, "field NO MATCH: " + key3);
         	    		
         	    	}
         	    	
