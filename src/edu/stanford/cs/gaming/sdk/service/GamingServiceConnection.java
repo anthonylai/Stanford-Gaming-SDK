@@ -143,26 +143,70 @@ public class GamingServiceConnection implements ServiceConnection  {
 	public void setUserId(int userId)  {
 		this.userId = userId;
 	}
-	public boolean getObjProperties(int requestId, int userId, int groupId, String objType, String objPropName) throws RemoteException {		
-		return true;
+	public boolean getObjProperties(int requestId, int userId, int groupId, String objType, String objPropName) throws RemoteException {				
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "get";
+    	appRequest.model = "ObjProperty";
+    	appRequest.path = "/obj_properties";
+        appRequest.object = objProps;
+    	int count = 0;
+       	ArrayList<Criterion> criteriaList = new ArrayList<Criterion>();    	
+    	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId));
+    	if (objType != null) criteriaList.add(new Criterion("type", objType));       	
+    	if ((count = criteriaList.size()) > 0)
+    		appRequest.criteria = new Criterion[count];        
+    	for (int i = 0; i < count; i++) {
+    		appRequest.criteria[i] = criteriaList.remove(0);
+    	}    	    	        
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;
 	}
 
 	
 	public boolean deleteObjProperties(int requestId, int[] objPropIds) throws RemoteException {
-		return true;
-	}
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "delete";
+    	appRequest.model = "ObjProperty";
+    	appRequest.path = "/obj_properties";
+        appRequest.object = objPropIds;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;		}
 	
 	public boolean updateObjProperties(int requestId, ObjProperty[] objProps) throws RemoteException {
-		return true;
-	}
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "put";
+    	appRequest.model = "ObjProperty";
+    	appRequest.path = "/obj_properties";
+        appRequest.object = objProps;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;	
+    }
 	public boolean createObjProperties(int requestId, ObjProperty[] objProps) throws RemoteException {
-		return true;
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "post";
+    	appRequest.model = "ObjProperty";
+    	appRequest.path = "/obj_properties";
+        appRequest.object = objProps;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;	
 	}	
 	public boolean getAppsUser(int requestId) throws RemoteException {
-		return true;
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "get";
+    	appRequest.model = "Users";
+    	appRequest.path = "/users";
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;			
+
 	}
 	public boolean getUser(int requestId, int userId) throws RemoteException {
-	    return true;
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "get";
+    	appRequest.model = "Users";
+    	appRequest.path = "/users";
+        appRequest.object = userId;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;	
 	}
 
 	
@@ -335,15 +379,35 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;
     }
     
+    public boolean editGroup(int requestId, Group group) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "put";
+    	appRequest.model = "Group";
+    	appRequest.path = "/groups/" + group.id;
+    	appRequest.object = group;
+    	group.app_id = appId;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;    	    		
+    }	
+        
 	public boolean deleteGroupUsers(int requestId, int groupId, User[] user) throws RemoteException {
-		return true;
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "delete";
+    	appRequest.model = "GroupUsers";
+    	appRequest.path = "/groups_users/" + groupId;
+    	appRequest.object = user;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;
 	}
 	
 	public boolean addGroupUsers(int requestId, int groupId, User[] user) throws RemoteException {
-		return true;
-	}  
-    public boolean editGroup(int requestId, Group group) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "post";
+    	appRequest.model = "GroupUsers";
+    	appRequest.path = "/groups_users/";
+    	appRequest.object = user;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;    	
-    }	
-    
+	}  
+
 }
