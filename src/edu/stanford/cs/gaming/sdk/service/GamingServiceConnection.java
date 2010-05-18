@@ -148,11 +148,11 @@ public class GamingServiceConnection implements ServiceConnection  {
     	appRequest.action = "get";
     	appRequest.model = "ObjProperty";
     	appRequest.path = "/obj_properties";
-        appRequest.object = objProps;
     	int count = 0;
        	ArrayList<Criterion> criteriaList = new ArrayList<Criterion>();    	
     	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId));
-    	if (objType != null) criteriaList.add(new Criterion("type", objType));       	
+    	if (objType != null) criteriaList.add(new Criterion("obj_type", objType));   
+    	if (objPropName != null) criteriaList.add(new Criterion("name", objPropName));       	
     	if ((count = criteriaList.size()) > 0)
     		appRequest.criteria = new Criterion[count];        
     	for (int i = 0; i < count; i++) {
