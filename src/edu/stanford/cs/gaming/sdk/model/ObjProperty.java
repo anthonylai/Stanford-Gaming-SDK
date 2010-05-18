@@ -12,7 +12,7 @@ public class ObjProperty {
      public int object_id;
      public int id;
      public String name;
-     public int type;
+     public int prop_type;
      public int int_val;
      public float float_val;
      public String string_val;

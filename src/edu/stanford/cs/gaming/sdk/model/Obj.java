@@ -5,7 +5,7 @@ public class Obj {
 	public int app_id;
 	public int user_id;
 	public int group_id;
-	public String type;
+	public String obj_type;
     public ObjProperty[] object_properties; 
     public Obj() {
 	  
