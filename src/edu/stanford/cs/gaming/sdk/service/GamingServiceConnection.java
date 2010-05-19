@@ -21,6 +21,11 @@ import android.util.Log;
 public class GamingServiceConnection implements ServiceConnection  {
 	public static final String RESULT_CODE_ERROR = "error";
 	public static final String RESULT_CODE_SUCCESS = "success";	
+	 public static final int OBJ_PROPERTIES_INT = 0;
+	 public static final int OBJ_PROPERTIES_FLOAT = 1;
+	 public static final int OBJ_PROPERTIES_STRING = 2;
+	 public static final int OBJ_PROPERTIES_BLOB = 3;
+	 	
     public boolean connected = false;
 	private static final String TAG = "GamingServiceConnection";	
 	public static GamingRemoteService grs;
@@ -405,6 +410,8 @@ public class GamingServiceConnection implements ServiceConnection  {
     	appRequest.action = "post";
     	appRequest.model = "GroupUsers";
     	appRequest.path = "/groups_users/";
+    	appRequest.criteria = new Criterion[1];        
+    	appRequest.criteria[0] = new Criterion("id", "" + groupId);
     	appRequest.object = user;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;    	

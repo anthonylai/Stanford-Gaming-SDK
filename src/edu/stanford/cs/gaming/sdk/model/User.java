@@ -10,14 +10,7 @@ public class User {
   public int fb_id;
 
 
-  public User() {
-      id = 123;	  
-	  first_name = "Felipe";
-	  last_name = "Pimentel";
-	  email = "felipe.pimentel@helloworld.com";
-	  fb_id = -1;
-
-	  
+  public User() {	  
   }
   /*
   public String toString() {
