@@ -282,12 +282,21 @@ public class GamingServiceConnection implements ServiceConnection  {
 	
 	public boolean updateScoreBoard(int requestId, ScoreBoard scoreBoard) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "put";
+    	appRequest.model = "ScoreBoards";
+    	appRequest.path = "/score_boards/" + scoreBoard.id;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
+		return true;
+	}
+	
+	public boolean createScoreBoard(int requestId, ScoreBoard scoreBoard) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards";
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
 		return true;
-	}
+	}	
 	public boolean getObjs(int requestId, String type, int userId) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";
