@@ -297,7 +297,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
 		return true;
 	}	
-	public boolean getObjs(int requestId, String type, int userId) throws RemoteException {
+	public boolean getObjs(int requestId, String type, int userId, int groupId) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Objs";
@@ -305,6 +305,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	int count = 0;
        	ArrayList<Criterion> criteriaList = new ArrayList<Criterion>();    	
     	if (userId != -1) criteriaList.add(new Criterion("user_id", ""+userId));
+    	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId)); 	
     	if (type != null) criteriaList.add(new Criterion("type", type));       	
     	if ((count = criteriaList.size()) > 0)
     		appRequest.criteria = new Criterion[count];        
