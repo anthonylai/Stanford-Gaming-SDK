@@ -34,7 +34,7 @@ public class GamingTestActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        receiver = new GameReceiver();
+        receiver = new GameReceiver(); 
         setContentView(R.layout.main); 
         tv = (TextView) findViewById(R.id.TextView01);
         gameConn = new GamingServiceConnection(this, receiver, 1, "", "TestActivity");
@@ -63,7 +63,20 @@ public class GamingTestActivity extends Activity {
 //						AppRequest appRequest = new AppRequest(1, 1, "");
 //						Log.d(TAG, "Request sent is: " + appRequest);
 //						gameConn.grs.sendRequest(1, Util.toJson(appRequest).toString());
-						gameConn.getGroups(2, "firstgroup", 1, 0, 5);						
+//						gameConn.getGroups(2, "firstgroup", 1, 0, 5);	
+						Group group = new Group();
+						group.app_id = 2;
+					    int[] userIds = new int[1];
+					    userIds[0] = 1;
+					    
+						gameConn.sendMessage(1, group, 1, 0, userIds, System.currentTimeMillis());
+						userIds = new int[2];
+					    userIds[0] = 1;		
+					    userIds[1] = 2;
+						gameConn.sendMessage(2, group, 1, 0, userIds, System.currentTimeMillis());
+						userIds[0] = 3;
+						gameConn.sendMessage(3, group, 1, 0, userIds, System.currentTimeMillis());
+
 //						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);
 //						gameConn.getGroups(3, "Test Group", -1, -1, -1);

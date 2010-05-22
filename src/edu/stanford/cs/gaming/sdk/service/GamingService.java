@@ -11,6 +11,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,9 +21,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -32,9 +36,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.stanford.concierge.Concierge;
 import edu.stanford.cs.gaming.sdk.model.*;
 
 import java.io.*;
@@ -63,7 +69,14 @@ public class GamingService extends Service implements LocationListener {
     private List<String> completedTaskList = new ArrayList<String>();
     public static List<AppRequest> requestQ;
     private GamingService gamingService = this;
-
+    private static final String CONCIERGE_URL = "http://colby.stanford.edu/community_vibe/concierge/rpc.php";
+    private SharedPreferences sharedPreferences;
+    private String lastConciergeId;
+    private static final String CONCIERGE_NAME = "gaming";
+    private static final String CONCIERGE_KEY = "afj";
+	public static Concierge concierge;
+    
+    
     @Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -74,14 +87,27 @@ public class GamingService extends Service implements LocationListener {
 	}
 
 	private GamingRemoteService.Stub gamingRemoteServiceStub = new GamingRemoteService.Stub() {
-        public boolean addApp(int appId, String appApiKey) throws RemoteException {
+        public boolean addApp(int appId, String appApiKey, String intentFilterEvent) throws RemoteException {
     		Log.d("GamingRemoteServiceStub", "addApp()");
-        	if (appHash.get(appId) == null) {
-        		appHash.put(appId, new App(appId, gamingService));
+    		App app = null;
+        	if ((app= appHash.get(appId)) == null) {
+        		app = new App(appId, gamingService);
+        		appHash.put(appId, app);
 
         	}
+        	app.addQueue(intentFilterEvent);
+        	
         	return true;
         	
+        }
+        public boolean setUserId(int appId, int userId) {
+        	App app = null;
+        	if ((app= appHash.get(appId)) != null) {
+        		app.setUserId(userId);
+        		return true;
+
+        	}
+        	return false;
         }
 
     	public boolean sendRequest(int appId, String request) throws RemoteException {
@@ -98,7 +124,7 @@ public class GamingService extends Service implements LocationListener {
 			}
     		
     		return true;
-    	}
+    	}	
         
         public boolean removeApp(int appId) throws RemoteException {
         	Log.d("GamingRemoveServiceStub", "removeApp()");
@@ -121,6 +147,7 @@ public class GamingService extends Service implements LocationListener {
 			taskList.add(url);
 			return;
 		}
+		/*
 		public String getNextCompletedTask(int appId) throws RemoteException {
 			if (!appHash.get(appId).responseQ.isEmpty()) {
 				Object object = null;
@@ -152,16 +179,16 @@ public class GamingService extends Service implements LocationListener {
 
 			return;
 		}
-		
-		public boolean hasPendingNotification(int appId) throws RemoteException {
-			return !appHash.get(appId).responseQ.isEmpty();
+		*/
+		public boolean hasPendingNotification(int appId, String intentFilterEvent) throws RemoteException {
+			return !appHash.get(appId).responseQs.get(intentFilterEvent).isEmpty();
 		}
 
-		public String getNextPendingNotification(int appId) throws RemoteException {
-			if (!appHash.get(appId).responseQ.isEmpty()) {
+		public String getNextPendingNotification(int appId, String intentFilterEvent) throws RemoteException {
+			if (!appHash.get(appId).responseQs.get(intentFilterEvent).isEmpty()) {
 				Object object = null;
 				try {
-					object = appHash.get(appId).responseQ.take();
+					object = appHash.get(appId).responseQs.get(intentFilterEvent).take();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -190,7 +217,10 @@ public class GamingService extends Service implements LocationListener {
 		Log.d(TAG, "onCreate");
 //		write("onCreate");
 //		Toast.makeText(this,"Service created " , Toast.LENGTH_LONG).show();
-		
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		lastConciergeId = sharedPreferences.getString("lastConciergeId", "0");
+
+		Log.d(TAG, "concierge is " + concierge);
 		_startService();
 //        determineLocation();
 
@@ -232,6 +262,13 @@ public class GamingService extends Service implements LocationListener {
 	//	write("startService");
 		timer.scheduleAtFixedRate( new TimerTask() {
 			public void run() { 
+				try {
+					if (concierge == null)
+						concierge = new Concierge(CONCIERGE_URL, CONCIERGE_NAME, CONCIERGE_KEY);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}					
 				counter += 10;
  //               write("Service iteration: " + counter+ 10);
                 Log.d(TAG, "COUNTER: " + counter);
@@ -250,7 +287,68 @@ public class GamingService extends Service implements LocationListener {
                 */
 
                 //   	        sendBroadcast(broadcast);
-    	    	for (int appId : appHash.keySet()) {
+                JSONArray array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, "10000");
+                if (array.length() > 0) {
+                    Hashtable<String, AppConnection> appConns = new Hashtable<String, AppConnection>();
+                
+                for (int i = 0; i < array.length(); i++) {
+                	try {
+						Log.d(TAG, "JSON RETURNED IS: " + array.get(i).getClass().getName() + "::" + array.get(i));
+						JSONObject jsonObj = ((JSONObject) array.get(i));
+						String[] tags = jsonObj.getString("taglist").split(",");
+						JSONObject jsonAppRequest = new JSONObject(jsonObj.getString("content"));
+						Log.d(TAG, "OBJECT IS: " + Util.fromJson(jsonAppRequest, null, null).getClass().getName());
+						Object obj =  Util.fromJson(jsonAppRequest, null, null);
+						if (obj != null && "edu.stanford.cs.gaming.sdk.model.AppRequest".equals(obj.getClass().getName())) {
+						AppRequest appRequest = (AppRequest) obj;
+						AppResponse appResponse = new AppResponse();
+						appResponse.appRequest = appRequest;
+						appResponse.object = appRequest.object;
+						appResponse.request_id = appRequest.id;
+						appResponse.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
+						appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));
+						App app = appHash.get(appRequest.app_id);
+						Log.d(TAG, "tags count is : " + tags.length);
+						for (String tag: tags) {
+							Log.d(TAG, "tag is " + tag + " and userId is: " + app.userId);
+							if (tag.equals("" + app.userId)) {
+								LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                	
+							  if (responseQ != null) {
+
+								  responseQ.put(appResponse);
+
+								  }					
+							}
+						}
+					}
+//						String[] tags = array.get(i).getString("taglist");
+//						if (app != null && app.userId == req)
+
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+                }
+				Editor editor = sharedPreferences.edit();
+				try {
+					lastConciergeId = ((JSONObject) array.get(0)).getString("mid");
+					editor.putString("lastConciergeId", lastConciergeId);
+					editor.commit();
+
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                for (AppConnection appConn: appConns.values()) {
+
+		  		          gamingService.sendBroadcast(new Intent(appConn.intentFilterEvent));
+					
+                }
+                }
+                Log.d(TAG, "MESSAGE RECEIVED: " + array.length());
+                /*
+                for (int appId : appHash.keySet()) {
                     Log.d(TAG, "123 Broadcasting to : " + appId);
                     while (taskList.size() > 0) {
                     Log.d(TAG, "HERE 1");
@@ -270,10 +368,10 @@ public class GamingService extends Service implements LocationListener {
 //                for (Intent intent : intentArr) {
 //                	intent.
 //                }
-                
+                */
 			} 
 
-			}, 0, 30000);
+			}, 5000, 30000);
 
 	}
 	/*

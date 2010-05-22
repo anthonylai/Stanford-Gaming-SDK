@@ -10,6 +10,8 @@ import java.net.URLEncoder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 /**
  * This is a class to communicate with the Concierge platform.
  * <br><br>
@@ -588,13 +590,16 @@ public class Concierge
 //		    data += "&" + URLEncoder.encode("content", "UTF-8") + "=" + URLEncoder.encode(content.toJSONString(), "UTF-8");
 		    data += "&" + URLEncoder.encode("content", "UTF-8") + "=" + URLEncoder.encode(content.toString(), "UTF-8");    
 		    data += "&" + URLEncoder.encode("tags", "UTF-8") + "=" + URLEncoder.encode(arrayToString(tags), "UTF-8");
-			
+			Log.d("CONCIERGE", "SENDING REQUEST");
 		    String response = sendRequest(_conciergeURL, data);
+			Log.d("CONCIERGE", "FINISHED SENDING REQUEST");
 		    
 		    if(!response.equalsIgnoreCase("false"))
 		    {
 		    	retVal = Integer.parseInt(response);
 		    }
+			Log.d("CONCIERGE", "MESSAGE_ID IS" + retVal);
+
 		}
 		catch(Exception e)
 		{
@@ -682,6 +687,7 @@ public class Concierge
 				result.append(strings[i]);
 			}
 		}
+		Log.d("CONCEIGE", "RESULT IS: " + result);
 		return result.toString();
 	}
 }

@@ -25,6 +25,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	 public static final int OBJ_PROPERTIES_FLOAT = 1;
 	 public static final int OBJ_PROPERTIES_STRING = 2;
 	 public static final int OBJ_PROPERTIES_BLOB = 3;
+	 public static final String GAMING_SERVICE_PREFIX = "edu.stanford.cs.gaming.sdk.service";
 	 	
     public boolean connected = false;
 	private static final String TAG = "GamingServiceConnection";	
@@ -41,7 +42,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 			int appId, String appApiKey, String intentFilterEvent) {
 		this.activity = activity;
 //        this.intent = new Intent(activity, GamingService.class);	
-		this.intent = new Intent("edu.stanford.cs.gaming.sdk.service");
+		this.intent = new Intent(GAMING_SERVICE_PREFIX);
         this.receiver = receiver;
         this.appId = appId;
         this.appApiKey = appApiKey;
@@ -60,7 +61,9 @@ public class GamingServiceConnection implements ServiceConnection  {
 			Log.d(TAG, "Service connecting");			
 			grs = GamingRemoteService.Stub.asInterface(service);
 			try {
-				grs.addApp(appId, appApiKey);
+				grs.addApp(appId, appApiKey, intentFilterEvent);
+				grs.setUserId(appId, userId);
+				
 //				try {
 					activity.registerReceiver(receiver, new IntentFilter(intentFilterEvent));
 
@@ -136,7 +139,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	*/
 	
 	public AppResponse getNextPendingNotification() throws RemoteException, JSONException {
-		String response = grs.getNextPendingNotification(appId);
+		String response = grs.getNextPendingNotification(appId, intentFilterEvent);
 		if (response != null)
 		  return (AppResponse) Util.fromJson(new JSONObject(response), null, null);
 		return null;
@@ -147,6 +150,14 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 	public void setUserId(int userId)  {
 		this.userId = userId;
+		if (grs != null) {
+		try {
+			grs.setUserId(appId, userId);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
 	}
 	public boolean getObjProperties(int requestId, int userId, int groupId, String objType, String objPropName) throws RemoteException {				
 		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
@@ -172,7 +183,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "delete";
     	appRequest.model = "ObjProperty";
-    	appRequest.path = "/object_properties";
+    	appRequest.path = "/object_properties/0";
         appRequest.object = objPropIds;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;		}
@@ -181,7 +192,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "put";
     	appRequest.model = "ObjProperty";
-    	appRequest.path = "/object_properties";
+    	appRequest.path = "/object_properties/0";
         appRequest.object = objProps;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;	
@@ -427,4 +438,24 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;    	
 	}  
 
+	public boolean sendMessage(int requestId, Object msg, int type, int groupId, int[] toUserIds, long dateTime) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "message";
+    	Message message = new Message();
+		message.dateTime = dateTime;
+		message.fromGroupId = groupId;
+		message.fromUserId = this.userId;
+		message.msg = msg;
+		if (toUserIds != null) {
+			message.toUsers = new int[toUserIds.length];
+		}
+		for (int i = 0; i < toUserIds.length; i++) {
+			message.toUsers[i] = toUserIds[i];
+		}
+		message.type = type;
+    	appRequest.object = message;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  		
+		return true;
+		
+	}
 }

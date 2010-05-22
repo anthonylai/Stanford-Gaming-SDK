@@ -258,6 +258,7 @@ public class Util {
     	  }
     	  return json;
       }
+
       //ASLAI: Add error handling if issues with network, possibly tell user to enable internet access
       public static String constructParams(AppRequest request) {
        	  String str = request.path + "?format=json&request_id=" + request.id + "&app_id=" + request.app_id +
