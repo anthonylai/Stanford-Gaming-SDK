@@ -218,7 +218,7 @@ public class GamingService extends Service implements LocationListener {
 //		write("onCreate");
 //		Toast.makeText(this,"Service created " , Toast.LENGTH_LONG).show();
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		lastConciergeId = sharedPreferences.getString("lastConciergeId", "0");
+		lastConciergeId = sharedPreferences.getString("lastConciergeId", "348");
 
 		Log.d(TAG, "concierge is " + concierge);
 		_startService();
