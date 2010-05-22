@@ -172,7 +172,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "delete";
     	appRequest.model = "ObjProperty";
-    	appRequest.path = "/obj_properties";
+    	appRequest.path = "/object_properties";
         appRequest.object = objPropIds;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;		}
@@ -181,7 +181,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "put";
     	appRequest.model = "ObjProperty";
-    	appRequest.path = "/obj_properties";
+    	appRequest.path = "/object_properties";
         appRequest.object = objProps;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;	
@@ -190,7 +190,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "ObjProperty";
-    	appRequest.path = "/obj_properties";
+    	appRequest.path = "/object_properties";
         appRequest.object = objProps;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;	
