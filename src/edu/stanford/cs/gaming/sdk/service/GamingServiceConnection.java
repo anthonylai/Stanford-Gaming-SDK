@@ -438,20 +438,22 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;    	
 	}  
 
-	public boolean sendMessage(int requestId, Object msg, int type, int groupId, int[] toUserIds, long dateTime) throws RemoteException {
+	public boolean sendMessage(int requestId, Object msg, int type, User fromUser, Group group, User[] toUsers, long dateTime) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "message";
     	Message message = new Message();
 		message.dateTime = dateTime;
-		message.fromGroupId = groupId;
-		message.fromUserId = this.userId;
+		message.fromGroup = group;
+//		message.fromUser = fromUser;
 		message.msg = msg;
-		if (toUserIds != null) {
-			message.toUsers = new int[toUserIds.length];
+		
+		if (toUsers != null) {
+			message.toUsers = new User[toUsers.length];
 		}
-		for (int i = 0; i < toUserIds.length; i++) {
-			message.toUsers[i] = toUserIds[i];
+		for (int i = 0; i < toUsers.length; i++) {
+			message.toUsers[i] = toUsers[i];
 		}
+		
 		message.type = type;
     	appRequest.object = message;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  		

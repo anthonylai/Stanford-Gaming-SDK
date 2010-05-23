@@ -64,11 +64,11 @@ public class App {
 					  for (int i=0; i < msg.toUsers.length; i++) {
 //						  tags[i] = new String(GamingServiceConnection.GAMING_SERVICE_PREFIX + 
 //								  "." + msg.toUsers[i]);
-						  tags[i] = "" + msg.toUsers[i];						  
+						  tags[i] = "" + msg.toUsers[i].id;						  
 						  Log.d(tag, "HERE HERE IN MESSAGE LOOP");
 					  }
 		                Log.d(tag, "MESSAGE BEFORE POST: ");
-		                gamingService.concierge.postMessage((JSONObject) Util.toJson(request), tags);
+		                gamingService.getConcierge().postMessage((JSONObject) Util.toJson(request), tags);
 		                Log.d(tag, "MESSAGE POSTED: ");
 					  
 				  } else {

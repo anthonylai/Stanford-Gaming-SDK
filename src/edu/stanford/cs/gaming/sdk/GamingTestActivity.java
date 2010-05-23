@@ -37,12 +37,12 @@ public class GamingTestActivity extends Activity {
         receiver = new GameReceiver(); 
         setContentView(R.layout.main); 
         tv = (TextView) findViewById(R.id.TextView01);
-        gameConn = new GamingServiceConnection(this, receiver, 1, "", "TestActivity");
+        gameConn = new GamingServiceConnection(this, receiver, 1001, "", "TestActivity");
         Button bindButton = (Button) findViewById(R.id.BindButton);
         bindButton.setOnClickListener(new OnClickListener() {
           	public void onClick(View v){
           		gameConn.bind();
-                gameConn.setUserId(1);          		
+                gameConn.setUserId(1001);          		
           	}});
         Button unbindButton = (Button) findViewById(R.id.UnbindButton);
         unbindButton.setOnClickListener(new OnClickListener() {
@@ -66,16 +66,19 @@ public class GamingTestActivity extends Activity {
 //						gameConn.getGroups(2, "firstgroup", 1, 0, 5);	
 						Group group = new Group();
 						group.app_id = 2;
-					    int[] userIds = new int[1];
-					    userIds[0] = 1;
+					    User[] toUsers = new User[1];
+					    toUsers[0] = new User();
+					    toUsers[0].id = 1001;
 					    
-						gameConn.sendMessage(1, group, 1, 0, userIds, System.currentTimeMillis());
-						userIds = new int[2];
-					    userIds[0] = 1;		
-					    userIds[1] = 2;
-						gameConn.sendMessage(2, group, 1, 0, userIds, System.currentTimeMillis());
-						userIds[0] = 3;
-						gameConn.sendMessage(3, group, 1, 0, userIds, System.currentTimeMillis());
+						gameConn.sendMessage(1, group, 1, null, null, toUsers, System.currentTimeMillis());
+						toUsers = new User[2];
+					    toUsers[0] = new User();
+					    toUsers[0].id = 1001;
+					    toUsers[1] = new User();
+					    toUsers[1].id = 1002;
+						gameConn.sendMessage(2, group, 1, null, null, toUsers, System.currentTimeMillis());
+						toUsers[0].id = 1003;
+						gameConn.sendMessage(3, group, 1, null, null, toUsers, System.currentTimeMillis());
 
 //						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);

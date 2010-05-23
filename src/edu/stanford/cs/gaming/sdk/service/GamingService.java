@@ -405,7 +405,17 @@ public class GamingService extends Service implements LocationListener {
 	public void write(String string) {
 		write(string, "log.txt");
 	}
-	
+	public static Concierge getConcierge() {
+		if (concierge == null)
+			try {
+				concierge = new Concierge(CONCIERGE_URL, CONCIERGE_NAME, CONCIERGE_KEY);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return concierge;
+
+	}
 	public void write(String string, String filename) {
 		try {			
 			BufferedWriter f = new BufferedWriter(new FileWriter("/sdcard/"+filename, true));
