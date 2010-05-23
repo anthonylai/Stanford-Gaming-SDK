@@ -304,6 +304,8 @@ public class GamingServiceConnection implements ServiceConnection  {
     	appRequest.action = "put";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards/" + scoreBoard.id;
+    	scoreBoard.app_id = this.appId;
+    	appRequest.object = scoreBoard;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
 		return true;
 	}
@@ -313,6 +315,8 @@ public class GamingServiceConnection implements ServiceConnection  {
     	appRequest.action = "post";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards";
+    	appRequest.object = scoreBoard;
+    	scoreBoard.app_id = this.appId;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
 		return true;
 	}	
