@@ -8,6 +8,7 @@ public class User {
   public String last_name;
   public String email;
   public int fb_id;
+  public String fb_photo;
 
 
   public User() {	  

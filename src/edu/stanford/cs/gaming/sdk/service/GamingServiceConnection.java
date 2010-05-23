@@ -163,10 +163,11 @@ public class GamingServiceConnection implements ServiceConnection  {
 		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "ObjProperty";
-    	appRequest.path = "/obj_properties";
+    	appRequest.path = "/object_properties";
     	int count = 0;
        	ArrayList<Criterion> criteriaList = new ArrayList<Criterion>();    	
     	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId));
+    	if (userId != -1) criteriaList.add(new Criterion("group_id", ""+userId));
     	if (objType != null) criteriaList.add(new Criterion("obj_type", objType));   
     	if (objPropName != null) criteriaList.add(new Criterion("name", objPropName));       	
     	if ((count = criteriaList.size()) > 0)
@@ -219,8 +220,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Users";
-    	appRequest.path = "/users";
-        appRequest.object = userId;
+    	appRequest.path = "/users/" + userId;
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;	
 	}
@@ -241,7 +241,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Users";
-    	appRequest.path = "/users/friends";
+    	appRequest.path = "/users/get_friends/" + this.userId;
     	appRequest.criteria = new Criterion[1];
     	appRequest.criteria[0] = new Criterion("app_id", "" + appId);
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
@@ -256,7 +256,15 @@ public class GamingServiceConnection implements ServiceConnection  {
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;
     }
-    
+
+	public boolean getScoreBoard(int requestId, int scoreBoardId) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "get";
+    	appRequest.model = "ScoreBoards";
+    	appRequest.path = "/score_boards/" + scoreBoardId;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
+		return true;
+	}    
 	/*
 	 * 	Order = null -- no ordering
 	 *  Order = "asc" -- asc
