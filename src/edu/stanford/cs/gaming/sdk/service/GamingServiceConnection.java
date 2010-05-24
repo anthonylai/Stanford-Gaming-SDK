@@ -169,7 +169,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId));
     	if (userId != -1) criteriaList.add(new Criterion("group_id", ""+userId));
     	if (objType != null) criteriaList.add(new Criterion("obj_type", objType));   
-    	if (objPropName != null) criteriaList.add(new Criterion("name", objPropName));       	
+    	if (objPropName != null) criteriaList.add(new Criterion("name", objPropName));
     	if ((count = criteriaList.size()) > 0)
     		appRequest.criteria = new Criterion[count];        
     	for (int i = 0; i < count; i++) {
@@ -320,7 +320,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
 		return true;
 	}	
-	public boolean getObjs(int requestId, String type, int userId, int groupId) throws RemoteException {
+	public boolean getObjs(int requestId, String type, int userId, int groupId, boolean withProperties) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Objs";
@@ -330,6 +330,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	if (userId != -1) criteriaList.add(new Criterion("user_id", ""+userId));
     	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId)); 	
     	if (type != null) criteriaList.add(new Criterion("type", type));       	
+    	criteriaList.add(new Criterion("with_properties", ""+withProperties));
     	if ((count = criteriaList.size()) > 0)
     		appRequest.criteria = new Criterion[count];        
     	for (int i = 0; i < count; i++) {
