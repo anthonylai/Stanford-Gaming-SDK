@@ -360,7 +360,8 @@ public class GamingServiceConnection implements ServiceConnection  {
     	appRequest.model = "Objs";
     	appRequest.path = "/objs/";
     	appRequest.object = obj;
-    	obj.app_id = appId;
+    	obj.user_id = this.userId;
+    	obj.app_id = this.appId;
     	Log.d(TAG, "OBJ IN JSON IS: " + Util.toJson(appRequest));
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;    	
@@ -472,4 +473,15 @@ public class GamingServiceConnection implements ServiceConnection  {
 		return true;
 		
 	}
+	public boolean rateObj(int requestId, int objId, int rating) throws RemoteException {
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		appRequest.action = "get";
+		appRequest.model = "Objs";
+		appRequest.path = "/objs/add_rating/" + objId;
+		appRequest.criteria = new Criterion[1]; 
+		appRequest.criteria[0] = new Criterion("rating", "" + rating);
+		Log.d(TAG, "OBJ IN JSON IS: " + Util.toJson(appRequest));
+		grs.sendRequest(appId, Util.toJson(appRequest).toString());
+		return true;
+    }	
 }

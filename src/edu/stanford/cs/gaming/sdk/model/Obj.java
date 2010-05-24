@@ -6,6 +6,8 @@ public class Obj {
 	public int user_id;
 	public int group_id;
 	public String obj_type;
+	int rating_count; 
+	int rating_total;	
     public ObjProperty[] object_properties; 
     public Obj() {
 	  

@@ -266,9 +266,11 @@ public class Util {
        	  if (request.user_id != 0) {
            	 str += "&user_id=" + request.user_id;
        	  }
+       	  /*
        	  if (request.object != null) {
             str += "&object=" + URLEncoder.encode(Util.toJson(request.object).toString());
        	  }
+       	  */
        	  if (request.criteria != null && request.criteria.length > 0)
        		  str += "&criteria=" + URLEncoder.encode(criteriaToJsonStr(request.criteria).toString());
 			Log.d(TAG, "=====================================");
@@ -287,17 +289,26 @@ public class Util {
 			HttpRequestBase hrb = null;			
 
 			DefaultHttpClient httpclient = new DefaultHttpClient();
-		
+			StringEntity se;		
 			if ("get".equals(request.action)) {
 				hrb = new HttpGet(GamingService.gamingServer + constructParams(request));
 				
 			} else if ("put".equals(request.action)) {
 				hrb = new HttpPut(GamingService.gamingServer + constructParams(request));
+		       	  if (request.object != null) {
+		       		  se = new StringEntity(URLEncoder.encode(Util.toJson(request.object).toString()));
+		       		  ((HttpPut) hrb).setEntity(se);
+		         	  }				
 			} else if ("delete".equals(request.action)) {
 				hrb = new HttpDelete(GamingService.gamingServer + constructParams(request));
 			} else if ("post".equals(request.action)) {
 				hrb = new HttpPost(GamingService.gamingServer + constructParams(request));	
+		       	  if (request.object != null) {
+		       		  se = new StringEntity(URLEncoder.encode(Util.toJson(request.object).toString()));
+		       		  ((HttpPost) hrb).setEntity(se);
+		         	  }				
 			}
+
 /*			
 			BasicHttpParams httpParams = new BasicHttpParams();
 			httpParams.setParameter("request_id", request.id);
