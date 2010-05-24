@@ -330,7 +330,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	if (userId != -1) criteriaList.add(new Criterion("user_id", ""+userId));
     	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId)); 	
     	if (type != null) criteriaList.add(new Criterion("type", type));       	
-    	criteriaList.add(new Criterion("with_properties", ""+withProperties));
+    	if (withProperties) criteriaList.add(new Criterion("with_properties", ""+withProperties));
     	if ((count = criteriaList.size()) > 0)
     		appRequest.criteria = new Criterion[count];        
     	for (int i = 0; i < count; i++) {
