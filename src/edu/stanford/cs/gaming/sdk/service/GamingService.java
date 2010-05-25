@@ -308,7 +308,16 @@ public class GamingService extends Service implements LocationListener {
 						appResponse.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
 						appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));
 						App app = appHash.get(appRequest.app_id);
+						if (app != null) {
 						Log.d(TAG, "tags count is : " + tags.length);
+						if (tags.length == 0) {
+							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                								
+							  if (responseQ != null) {
+
+								  responseQ.put(appResponse);
+
+								  }		
+						} else {
 						for (String tag: tags) {
 							Log.d(TAG, "tag is " + tag + " and userId is: " + app.userId);
 							if (tag.equals("" + app.userId)) {
@@ -319,6 +328,8 @@ public class GamingService extends Service implements LocationListener {
 
 								  }					
 							}
+						}
+						}
 						}
 					}
 //						String[] tags = array.get(i).getString("taglist");

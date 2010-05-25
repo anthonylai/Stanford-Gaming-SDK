@@ -463,10 +463,11 @@ public class GamingServiceConnection implements ServiceConnection  {
 		
 		if (toUsers != null) {
 			message.toUsers = new User[toUsers.length];
+			for (int i = 0; i < toUsers.length; i++) {
+				message.toUsers[i] = toUsers[i];
+			}			
 		}
-		for (int i = 0; i < toUsers.length; i++) {
-			message.toUsers[i] = toUsers[i];
-		}
+
 		
 		message.type = type;
     	appRequest.object = message;
