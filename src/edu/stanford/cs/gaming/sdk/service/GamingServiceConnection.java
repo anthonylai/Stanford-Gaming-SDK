@@ -457,7 +457,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		if (intentFilterEvent == null)
 			appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.intentFilterEvent);
 		else
-	    	appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+	    	appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, "edu.stanford.cs.gaming.sdk." + appId + "." + intentFilterEvent);
 			
     	appRequest.action = "message";
     	Message message = new Message();

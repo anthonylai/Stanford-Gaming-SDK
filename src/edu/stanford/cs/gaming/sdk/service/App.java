@@ -60,12 +60,15 @@ public class App {
 				  if ("message".equals(request.action)) {
 					  Log.d(tag, "REQUEST OBJECT IS: " + request.object.getClass().getName());
 					  Message msg = (Message) request.object;
-					  String[] tags = new String[msg.toUsers.length];
+					  String[] tags = new String[0];				  
+					  if (msg.toUsers != null) {
+					  tags = new String[msg.toUsers.length];
 					  for (int i=0; i < msg.toUsers.length; i++) {
 //						  tags[i] = new String(GamingServiceConnection.GAMING_SERVICE_PREFIX + 
 //								  "." + msg.toUsers[i]);
 						  tags[i] = "" + msg.toUsers[i].id;						  
 						  Log.d(tag, "HERE HERE IN MESSAGE LOOP");
+					  }
 					  }
 		                Log.d(tag, "MESSAGE BEFORE POST: ");
 		                gamingService.getConcierge().postMessage((JSONObject) Util.toJson(request), tags);

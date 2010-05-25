@@ -310,7 +310,7 @@ public class GamingService extends Service implements LocationListener {
 						App app = appHash.get(appRequest.app_id);
 						if (app != null) {
 						Log.d(TAG, "tags count is : " + tags.length);
-						if (tags.length == 0) {
+						if ("".equals(tags[0])) {
 							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                								
 							  if (responseQ != null) {
 
