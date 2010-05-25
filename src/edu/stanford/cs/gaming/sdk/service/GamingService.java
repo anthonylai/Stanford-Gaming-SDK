@@ -313,7 +313,7 @@ public class GamingService extends Service implements LocationListener {
 						if ("".equals(tags[0])) {
 							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                								
 							  if (responseQ != null) {
-
+                                  Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + " INTO QUEUE");
 								  responseQ.put(appResponse);
 
 								  }		
@@ -321,7 +321,9 @@ public class GamingService extends Service implements LocationListener {
 						for (String tag: tags) {
 							Log.d(TAG, "tag is " + tag + " and userId is: " + app.userId);
 							if (tag.equals("" + app.userId)) {
-								LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                	
+                                Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + " INTO QUEUE");
+
+                                LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                	
 							  if (responseQ != null) {
 
 								  responseQ.put(appResponse);
@@ -342,6 +344,8 @@ public class GamingService extends Service implements LocationListener {
 
                 }
 				Editor editor = sharedPreferences.edit();
+                Log.d(TAG, "MESSAGE RECEIVED: " + array.length());
+				
 				try {
 					lastConciergeId = ((JSONObject) array.get(0)).getString("mid");
 					editor.putString("lastConciergeId", lastConciergeId);
@@ -352,12 +356,12 @@ public class GamingService extends Service implements LocationListener {
 					e.printStackTrace();
 				}
                 for (AppConnection appConn: appConns.values()) {
+                    Log.d(TAG, "JAMES: BROADCASTING TO INTENT FILTER: " + appConn.intentFilterEvent);
 
 		  		          gamingService.sendBroadcast(new Intent(appConn.intentFilterEvent));
 					
                 }
                 }
-                Log.d(TAG, "MESSAGE RECEIVED: " + array.length());
                 /*
                 for (int appId : appHash.keySet()) {
                     Log.d(TAG, "123 Broadcasting to : " + appId);
