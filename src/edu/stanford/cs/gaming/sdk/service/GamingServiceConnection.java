@@ -458,7 +458,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	Message message = new Message();
 		message.dateTime = dateTime;
 		message.fromGroup = group;
-//		message.fromUser = fromUser;
+		message.fromUser = fromUser;
 		message.msg = msg;
 		
 		if (toUsers != null) {
