@@ -321,7 +321,8 @@ public class GamingService extends Service implements LocationListener {
 						for (String tag: tags) {
 							Log.d(TAG, "tag is " + tag + " and userId is: " + app.userId);
 							if (tag.equals("" + app.userId)) {
-                                Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + " INTO QUEUE");
+                                Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + 
+                                		" app id: " + app.appId + " user id: " + app.userId + " INTO QUEUE");
 
                                 LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                	
 							  if (responseQ != null) {
