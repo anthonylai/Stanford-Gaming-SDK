@@ -70,15 +70,16 @@ public class GamingTestActivity extends Activity {
 					    toUsers[0] = new User();
 					    toUsers[0].id = 1001;
 					    
-						gameConn.sendMessage(1, group, 1, null, null, toUsers, System.currentTimeMillis());
+						gameConn.sendMessage(1, group, 1, null, null, toUsers, System.currentTimeMillis(), null);
 						toUsers = new User[2];
 					    toUsers[0] = new User();
 					    toUsers[0].id = 1001;
 					    toUsers[1] = new User();
 					    toUsers[1].id = 1002;
-						gameConn.sendMessage(2, group, 1, null, null, toUsers, System.currentTimeMillis());
+						gameConn.sendMessage(2, group, 1, null, null, toUsers, System.currentTimeMillis(), null);
 						toUsers[0].id = 1003;
-						gameConn.sendMessage(3, group, 1, null, null, toUsers, System.currentTimeMillis());
+						gameConn.sendMessage(3, group, 1, null, null, toUsers, System.currentTimeMillis(), null);
+						gameConn.sendMessage(4, group, 1, null, null, null, System.currentTimeMillis(), null);
 
 //						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);
