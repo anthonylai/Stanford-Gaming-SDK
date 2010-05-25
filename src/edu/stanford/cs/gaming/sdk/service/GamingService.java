@@ -306,31 +306,32 @@ public class GamingService extends Service implements LocationListener {
 						appResponse.object = appRequest.object;
 						appResponse.request_id = appRequest.id;
 						appResponse.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
-						appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));
 						App app = appHash.get(appRequest.app_id);
 						if (app != null) {
-						Log.d(TAG, "tags count is : " + tags.length);
-						if ("".equals(tags[0])) {
-							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                								
-							  if (responseQ != null) {
-                                  Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + " INTO QUEUE");
-								  responseQ.put(appResponse);
-
-								  }		
-						} else {
-						for (String tag: tags) {
-							Log.d(TAG, "tag is " + tag + " and userId is: " + app.userId);
-							if (tag.equals("" + app.userId)) {
-                                Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + 
-                                		" app id: " + app.appId + " user id: " + app.userId + " INTO QUEUE");
-
-                                LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                	
-							  if (responseQ != null) {
-
-								  responseQ.put(appResponse);
-
-								  }					
-							}
+							Log.d(TAG, "tags count is : " + tags.length);
+							if ("".equals(tags[0])) {
+								LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                								
+								  if (responseQ != null) {
+									  Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + " INTO QUEUE");
+									  appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));
+									  responseQ.put(appResponse);
+	
+									  }		
+							} else {
+							for (String tag: tags) {
+								tag = tag.trim();
+								Log.d(TAG, "tag is " + tag + " and userId is: " + app.userId);
+								if (tag.equals("" + app.userId)) {
+	                                Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + 
+	                                		" app id: " + app.appId + " user id: " + app.userId + " INTO QUEUE");
+	        						appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));	
+	                                LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                	
+								  if (responseQ != null) {
+	
+									  responseQ.put(appResponse);
+	
+									  }					
+								}
 						}
 						}
 						}
