@@ -309,6 +309,18 @@ public class GamingServiceConnection implements ServiceConnection  {
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
 		return true;
 	}
+
+	public boolean updateScoreBoards(int requestId, ScoreBoard[] scoreBoards) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "put";
+    	appRequest.model = "ScoreBoards";
+    	appRequest.path = "/score_boards/multiple_update";
+    	for (int i=0; i < scoreBoards.length; i++)
+      	  scoreBoards[i].app_id = this.appId;
+    	appRequest.object = scoreBoards;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
+		return true;
+	}
 	
 	public boolean createScoreBoard(int requestId, ScoreBoard scoreBoard) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
@@ -320,6 +332,18 @@ public class GamingServiceConnection implements ServiceConnection  {
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
 		return true;
 	}	
+	
+	public boolean createScoreBoards(int requestId, ScoreBoard[] scoreBoards) throws RemoteException {
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "post";
+    	appRequest.model = "ScoreBoards";
+    	appRequest.path = "/score_boards/multiple_create";
+    	appRequest.object = scoreBoards;
+    	for (int i=0; i < scoreBoards.length; i++)
+    	  scoreBoards[i].app_id = this.appId;
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  			
+		return true;
+	}
 	public boolean getObjs(int requestId, String type, int userId, int groupId, boolean withProperties) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";

@@ -2,7 +2,6 @@ package edu.stanford.cs.gaming.sdk;
 
 import org.json.JSONObject;
 
-import edu.stanford.cs.gaming.sdk.model.AppRequest;
 import edu.stanford.cs.gaming.sdk.model.*;
 import edu.stanford.cs.gaming.sdk.service.*;
 
@@ -64,6 +63,7 @@ public class GamingTestActivity extends Activity {
 //						Log.d(TAG, "Request sent is: " + appRequest);
 //						gameConn.grs.sendRequest(1, Util.toJson(appRequest).toString());
 //						gameConn.getGroups(2, "firstgroup", 1, 0, 5);	
+						/*
 						Group group = new Group();
 						group.app_id = 2;
 					    User[] toUsers = new User[1];
@@ -80,7 +80,20 @@ public class GamingTestActivity extends Activity {
 						toUsers[0].id = 1003;
 						gameConn.sendMessage(3, group, 1, null, null, toUsers, System.currentTimeMillis(), null);
 						gameConn.sendMessage(4, group, 1, null, null, null, System.currentTimeMillis(), null);
-
+*/
+						
+						ScoreBoard[] scoreBoards;
+						scoreBoards = new ScoreBoard[2];
+						scoreBoards[0] = new ScoreBoard();
+						scoreBoards[0].user_id = 6;
+						scoreBoards[0].sb_type = "ASLAI1";
+						scoreBoards[0].value = 1;
+						
+						scoreBoards[1] = new ScoreBoard();
+						scoreBoards[1].user_id = 6;
+						scoreBoards[1].sb_type = "ASLAI2";
+						scoreBoards[1].value = 2;
+						gameConn.createScoreBoards(1, scoreBoards);
 //						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);
 //						gameConn.getGroups(3, "Test Group", -1, -1, -1);
