@@ -81,19 +81,34 @@ public class GamingTestActivity extends Activity {
 						gameConn.sendMessage(3, group, 1, null, null, toUsers, System.currentTimeMillis(), null);
 						gameConn.sendMessage(4, group, 1, null, null, null, System.currentTimeMillis(), null);
 */
+				/*		
+						ScoreBoard[] scoreBoards;
+						scoreBoards = new ScoreBoard[2];
+						scoreBoards[0] = new ScoreBoard();
+						scoreBoards[0].id = 42;
+						scoreBoards[0].user_id = 6;
+						scoreBoards[0].sb_type = "ASLAI1";
+						scoreBoards[0].value = 3;
 						
+						scoreBoards[1] = new ScoreBoard();
+						scoreBoards[1].id = 43;
+						scoreBoards[1].user_id = 6;
+						scoreBoards[1].sb_type = "ASLAI2";
+						scoreBoards[1].value = 4;
+						gameConn.updateScoreBoards(1, scoreBoards);
+						*/
 						ScoreBoard[] scoreBoards;
 						scoreBoards = new ScoreBoard[2];
 						scoreBoards[0] = new ScoreBoard();
 						scoreBoards[0].user_id = 6;
 						scoreBoards[0].sb_type = "ASLAI1";
-						scoreBoards[0].value = 1;
+						scoreBoards[0].value = 3;
 						
 						scoreBoards[1] = new ScoreBoard();
 						scoreBoards[1].user_id = 6;
 						scoreBoards[1].sb_type = "ASLAI2";
-						scoreBoards[1].value = 2;
-						gameConn.createScoreBoards(1, scoreBoards);
+						scoreBoards[1].value = 4;
+						gameConn.createScoreBoards(1, scoreBoards);						
 //						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);
 //						gameConn.getGroups(3, "Test Group", -1, -1, -1);

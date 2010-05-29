@@ -167,7 +167,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	int count = 0;
        	ArrayList<Criterion> criteriaList = new ArrayList<Criterion>();    	
     	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId));
-    	if (userId != -1) criteriaList.add(new Criterion("group_id", ""+userId));
+    	if (userId != -1) criteriaList.add(new Criterion("user_id", ""+userId));
     	if (objType != null) criteriaList.add(new Criterion("obj_type", objType));   
     	if (objPropName != null) criteriaList.add(new Criterion("name", objPropName));
     	if ((count = criteriaList.size()) > 0)
@@ -226,16 +226,18 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 
 	
-	public boolean registerUser(int requestId, User user) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
-    	appRequest.action = "post";
-    	appRequest.model = "Users";
-    	appRequest.path = "/users";
-        appRequest.object = user;
-    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
-    	return true;		
+	public boolean registerUser(int requestId, User user, long[] fb_ids) throws RemoteException {
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		appRequest.action = "post";
+		appRequest.model = "Users";
+		appRequest.path = "/users";
+		appRequest.object = user;
+		appRequest.criteria = new Criterion[1]; 
+		appRequest.criteria[0] = new Criterion("fb_ids", Util.toJson(fb_ids).toString() );
+		grs.sendRequest(appId, Util.toJson(appRequest).toString()); 
+		return true;	
 
-	}
+		}
 	
 	public boolean getInvitableFriends(int requestId) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
@@ -515,4 +517,22 @@ public class GamingServiceConnection implements ServiceConnection  {
 		grs.sendRequest(appId, Util.toJson(appRequest).toString());
 		return true;
     }	
+	
+	public boolean getUserScoreBoards(int requestId) throws RemoteException {
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		appRequest.action = "delete";
+		appRequest.model = "ScoreBoards";
+		appRequest.path = "/score_boards/get_user_scoreboards/0";
+		grs.sendRequest(appId, Util.toJson(appRequest).toString()); 
+		return true;
+	}
+
+	public boolean getGroupScoreBoards(int requestId) throws RemoteException {
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		appRequest.action = "delete";
+		appRequest.model = "ScoreBoards";
+		appRequest.path = "/score_boards/get_group_scoreboards/0";
+		grs.sendRequest(appId, Util.toJson(appRequest).toString()); 
+		return true;
+	}	
 }
