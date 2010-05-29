@@ -17,6 +17,11 @@ public class Group {
 		str += "Group id: " + id + "\n";
 		str += "Name: " + name + "\n";
 		str += "===================================\n";
+		if (users != null) {
+		for (int i=0; i < users.length; i++) {
+          str += users[i].toString();
+		}
+		}
 		return str;
 				
 	}

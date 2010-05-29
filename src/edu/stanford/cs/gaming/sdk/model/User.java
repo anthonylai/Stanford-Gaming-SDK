@@ -13,10 +13,10 @@ public class User {
 
   public User() {	  
   }
-  /*
-  public String toString() {
+  
+	public String toString() {
 	  return "User id: " + id + " first_name: " + first_name + " last_name: " + last_name + " email: " + email
 	  + " fb_id: " + fb_id;
   }
-  */
+  
 }

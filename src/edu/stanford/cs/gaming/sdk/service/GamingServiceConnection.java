@@ -292,6 +292,17 @@ public class GamingServiceConnection implements ServiceConnection  {
 		return true;
 	}
 	
+	public boolean getScoreBoards(int requestId, int[] scoreBoardIds) throws RemoteException {
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		appRequest.action = "get";
+		appRequest.model = "ScoreBoards";
+		appRequest.path = "/score_boards/get_scoreboards_by_ids/0";
+		appRequest.criteria = new Criterion[1]; 
+		appRequest.criteria[0] = new Criterion("scoreBoardIds", Util.toJson(scoreBoardIds).toString() );
+		grs.sendRequest(appId, Util.toJson(appRequest).toString());
+		return true;
+     }
+	
 	public boolean deleteScoreBoard(int requestId, int scoreBoardId) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "delete";

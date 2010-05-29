@@ -36,12 +36,12 @@ public class GamingTestActivity extends Activity {
         receiver = new GameReceiver(); 
         setContentView(R.layout.main); 
         tv = (TextView) findViewById(R.id.TextView01);
-        gameConn = new GamingServiceConnection(this, receiver, 1001, "", "TestActivity");
+        gameConn = new GamingServiceConnection(this, receiver, 1, "", "TestActivity");
         Button bindButton = (Button) findViewById(R.id.BindButton);
         bindButton.setOnClickListener(new OnClickListener() {
           	public void onClick(View v){
           		gameConn.bind();
-                gameConn.setUserId(1001);          		
+                gameConn.setUserId(6);          		
           	}});
         Button unbindButton = (Button) findViewById(R.id.UnbindButton);
         unbindButton.setOnClickListener(new OnClickListener() {
@@ -97,6 +97,7 @@ public class GamingTestActivity extends Activity {
 						scoreBoards[1].value = 4;
 						gameConn.updateScoreBoards(1, scoreBoards);
 						*/
+						/*
 						ScoreBoard[] scoreBoards;
 						scoreBoards = new ScoreBoard[2];
 						scoreBoards[0] = new ScoreBoard();
@@ -108,7 +109,9 @@ public class GamingTestActivity extends Activity {
 						scoreBoards[1].user_id = 6;
 						scoreBoards[1].sb_type = "ASLAI2";
 						scoreBoards[1].value = 4;
-						gameConn.createScoreBoards(1, scoreBoards);						
+						gameConn.createScoreBoards(1, scoreBoards);	
+						*/
+						gameConn.getGroups(1, null, 6, -1, -1);
 //						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);
 //						gameConn.getGroups(3, "Test Group", -1, -1, -1);
