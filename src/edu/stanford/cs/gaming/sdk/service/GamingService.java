@@ -218,7 +218,7 @@ public class GamingService extends Service implements LocationListener {
 //		write("onCreate");
 //		Toast.makeText(this,"Service created " , Toast.LENGTH_LONG).show();
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		lastConciergeId = sharedPreferences.getString("lastConciergeId", "348");
+		lastConciergeId = sharedPreferences.getString("lastConciergeId", "0");
 
 		Log.d(TAG, "concierge is " + concierge);
 		_startService();
@@ -287,7 +287,13 @@ public class GamingService extends Service implements LocationListener {
                 */
 
                 //   	        sendBroadcast(broadcast);
-                JSONArray array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, "10000");
+                JSONArray array = null;
+                if ("0".equals(lastConciergeId)) {
+                   array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, "1");
+                }
+
+                array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, "10000");
+                
                 if (array.length() > 0) {
                     Hashtable<String, AppConnection> appConns = new Hashtable<String, AppConnection>();
                 

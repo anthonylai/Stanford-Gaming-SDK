@@ -90,7 +90,6 @@ public class Util {
 	  }
 //	  Log.d(TAG, "isArray: " + obj.getClass().isArray());
 	  if (obj.getClass().isArray()) {
-//		  Log.d(TAG, "ARRAY!!!");
 		  int arrLen = Array.getLength(obj);
 		  JSONArray jsonArray = new JSONArray();
 		  for (int i=0; i < arrLen; i++) {
@@ -222,7 +221,13 @@ public class Util {
                             } else {                            	
                             	if ((objTmp = fromJson(jsonObj2.get(key3), null, null)) != null && field3 != null) {
 //                               	Log.d(TAG, "FIELD3 is " + field3.getName());
-//                               	Log.d(TAG, "VALUE is " + objTmp);                		
+//                               	Log.d(TAG, "VALUE is " + objTmp);       
+//                            		Log.d(TAG, "FIELD3 CLASS is " + field3.getType());
+//                            		Log.d(TAG, "objTmp CLASS is " + objTmp.getClass().getName());
+
+//                            		if ("float".equals(field3.getType())) {
+//                            			field3.set(obj1, new Float(objTmp))
+//                            		} else
 							        field3.set(obj1, objTmp);
                             	}
                             }
@@ -335,7 +340,7 @@ public class Util {
 			}
 			Log.d(TAG, "=====================================");
 			Log.d(TAG, "-------------------------------------");			
-            Log.d(TAG, "RESPONSE RECEIVED IS:");
+            Log.d(TAG, "RESPONSE RECEIVED FROM THE NETWORK IS:");
             Log.d(TAG, content.toString());
 			Log.d(TAG, "-------------------------------------");	
 			Log.d(TAG, "=====================================");
@@ -352,7 +357,7 @@ public class Util {
 //		httpclient.set
 //		StringEntity se = new StringEntity(holder.toString());
 //		httpost.setEntity(se);
-		Log.d(TAG, "HERE HERE path is " + path + " port is: " + httpGet.getURI());
+//		Log.d(TAG, "HERE HERE path is " + path + " port is: " + httpGet.getURI());
 		BasicHttpParams httpParams = new BasicHttpParams();
 		httpParams.setParameter("format", "json");
 		httpParams.setParameter("testing", "123");

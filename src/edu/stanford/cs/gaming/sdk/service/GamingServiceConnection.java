@@ -159,6 +159,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		}
 		}
 	}
+	/*
 	public boolean getObjProperties(int requestId, int userId, int groupId, String objType, String objPropName) throws RemoteException {				
 		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";
@@ -178,7 +179,28 @@ public class GamingServiceConnection implements ServiceConnection  {
     	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
     	return true;
 	}
-
+*/
+	
+	public boolean getObjProperties(int requestId, int userId, int groupId, String objType, String[] objPropName) throws RemoteException {				
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	appRequest.action = "get";
+    	appRequest.model = "ObjProperty";
+    	appRequest.path = "/object_properties";
+    	int count = 0;
+       	ArrayList<Criterion> criteriaList = new ArrayList<Criterion>();    	
+    	if (groupId != -1) criteriaList.add(new Criterion("group_id", ""+groupId));
+    	if (userId != -1) criteriaList.add(new Criterion("user_id", ""+userId));
+    	if (objType != null) criteriaList.add(new Criterion("obj_type", objType));   
+    	if (objPropName != null) criteriaList.add(new Criterion("name", Util.toJson(objPropName).toString()));
+    	if ((count = criteriaList.size()) > 0)
+    		appRequest.criteria = new Criterion[count];        
+    	for (int i = 0; i < count; i++) {
+    		appRequest.criteria[i] = criteriaList.remove(0);
+    	}    	    	        
+    	grs.sendRequest(appId, Util.toJson(appRequest).toString());  	
+    	return true;
+	}
+	
 	
 	public boolean deleteObjProperties(int requestId, int[] objPropIds) throws RemoteException {
     	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);

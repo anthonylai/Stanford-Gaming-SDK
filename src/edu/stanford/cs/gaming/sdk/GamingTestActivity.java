@@ -111,7 +111,11 @@ public class GamingTestActivity extends Activity {
 						scoreBoards[1].value = 4;
 						gameConn.createScoreBoards(1, scoreBoards);	
 						*/
-						gameConn.getGroups(1, null, 6, -1, -1);
+						//gameConn.getGroups(1, null, 6, -1, -1);
+						String[] propArray = new String[1];
+						propArray[0] = "name";
+//						propArray[1] = "duration";
+						gameConn.getObjProperties(101, 6, -1, "track", propArray);
 //						gameConn.createGroup(1, new Group("Test Group 0000000"));
 //						gameConn.getGroup(2, 1);
 //						gameConn.getGroups(3, "Test Group", -1, -1, -1);
