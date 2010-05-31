@@ -9,6 +9,7 @@ public class User {
   public String email;
   public int fb_id;
   public String fb_photo;
+  public long[] friend_fb_ids;
 
 
   public User() {	  

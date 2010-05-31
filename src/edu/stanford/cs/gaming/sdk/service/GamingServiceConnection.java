@@ -180,7 +180,19 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;
 	}
 */
-	
+	private boolean sendRequest(String str) throws RemoteException {
+		if (grs == null) {
+			bind();
+			try {
+				wait(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		}
+    	grs.sendRequest(appId, str);  			
+		return true;
+	}
 	public boolean getObjProperties(int requestId, int userId, int groupId, String objType, String[] objPropName) throws RemoteException {				
 		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
     	appRequest.action = "get";
