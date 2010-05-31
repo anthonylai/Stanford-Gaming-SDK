@@ -7,7 +7,7 @@ public class User {
   public String first_name;
   public String last_name;
   public String email;
-  public int fb_id;
+  public long fb_id;
   public String fb_photo;
   public long[] friend_fb_ids;
 
