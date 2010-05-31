@@ -260,14 +260,14 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 
 	
-	public boolean registerUser(int requestId, User user, long[] fb_ids) throws RemoteException {
+	public boolean registerUser(int requestId, User user) throws RemoteException {
 		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
 		appRequest.action = "post";
 		appRequest.model = "Users";
 		appRequest.path = "/users";
 		appRequest.object = user;
 		appRequest.criteria = new Criterion[1]; 
-		appRequest.criteria[0] = new Criterion("fb_ids", Util.toJson(fb_ids).toString() );
+//		appRequest.criteria[0] = new Criterion("fb_ids", Util.toJson(fb_ids).toString() );
 		grs.sendRequest(appId, Util.toJson(appRequest).toString()); 
 		return true;	
 
