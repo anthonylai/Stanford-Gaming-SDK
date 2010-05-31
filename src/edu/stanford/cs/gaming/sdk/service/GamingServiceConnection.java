@@ -266,7 +266,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		appRequest.model = "Users";
 		appRequest.path = "/users";
 		appRequest.object = user;
-		appRequest.criteria = new Criterion[1]; 
+//		appRequest.criteria = new Criterion[1]; 
 //		appRequest.criteria[0] = new Criterion("fb_ids", Util.toJson(fb_ids).toString() );
 		grs.sendRequest(appId, Util.toJson(appRequest).toString()); 
 		return true;	

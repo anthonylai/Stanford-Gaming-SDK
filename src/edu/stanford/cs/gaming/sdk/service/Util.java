@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.stanford.cs.gaming.sdk.model.AppRequest;
+import edu.stanford.cs.gaming.sdk.model.AppResponse;
 import edu.stanford.cs.gaming.sdk.model.Criterion;
 import edu.stanford.cs.gaming.sdk.model.Obj;
 
@@ -334,9 +335,12 @@ public class Util {
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return generateErrResponse(request);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return generateErrResponse(request);
+
 			}
 			Log.d(TAG, "=====================================");
 			Log.d(TAG, "-------------------------------------");			
@@ -347,6 +351,15 @@ public class Util {
 			
 			return content.toString();		  
 	  }    
+    public static String generateErrResponse(AppRequest appRequest) {
+    	AppResponse appResponse = new AppResponse();
+    	appResponse.request_id = appRequest.id;
+    	appResponse.error = new String[1];
+    	appResponse.error[0] = "Error sending request";
+    	appResponse.appRequest = appRequest;
+    	appResponse.result_code = GamingServiceConnection.RESULT_CODE_ERROR;
+    	return toJson(appResponse).toString();
+    }
     
 	public static String makeGet(String path) { //, Map params) {
 		StringBuffer content = new StringBuffer();
