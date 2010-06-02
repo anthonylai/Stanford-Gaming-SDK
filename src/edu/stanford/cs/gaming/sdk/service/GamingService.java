@@ -147,6 +147,10 @@ public class GamingService extends Service implements LocationListener {
 			taskList.add(url);
 			return;
 		}
+		public int getLastConciergeId() throws RemoteException {
+			receiveMessage(0);
+			return new Integer(lastConciergeId);
+		}
 		/*
 		public String getNextCompletedTask(int appId) throws RemoteException {
 			if (!appHash.get(appId).responseQ.isEmpty()) {
@@ -255,11 +259,124 @@ public class GamingService extends Service implements LocationListener {
     	write("onStartCommand");
     	return 1;
     }
+
+	  public void receiveMessage(int conciergeId) {
+		  lastConciergeId = "" + conciergeId;
+		  String receivedConciergeId = null;
+		  try {
+				if (concierge == null)
+					concierge = new Concierge(CONCIERGE_URL, CONCIERGE_NAME, CONCIERGE_KEY);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}					
+			counter += 10;
+//               write("Service iteration: " + counter+ 10);
+            Log.d(TAG, "COUNTER: " + counter);
+
+
+            //   	        sendBroadcast(broadcast);
+            JSONArray array = null;
+            if ("0".equals(lastConciergeId)) {
+               array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, "1");
+            }
+
+            array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, "10000");
+			try {
+				receivedConciergeId = ((JSONObject) array.get(0)).getString("mid");
+
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}            
+            if (array.length() > 0) {
+                Hashtable<String, AppConnection> appConns = new Hashtable<String, AppConnection>();
+            
+            for (int i = 0; i < array.length(); i++) {
+            	try {
+					Log.d(TAG, "JSON RETURNED IS: " + array.get(i).getClass().getName() + "::" + array.get(i));
+					JSONObject jsonObj = ((JSONObject) array.get(i));
+					String[] tags = jsonObj.getString("taglist").split(",");
+					JSONObject jsonAppRequest = new JSONObject(jsonObj.getString("content"));
+					Log.d(TAG, "OBJECT IS: " + Util.fromJson(jsonAppRequest, null, null).getClass().getName());
+					Object obj =  Util.fromJson(jsonAppRequest, null, null);
+					if (obj != null && "edu.stanford.cs.gaming.sdk.model.AppRequest".equals(obj.getClass().getName())) {
+					AppRequest appRequest = (AppRequest) obj;
+					AppResponse appResponse = new AppResponse();
+					appResponse.appRequest = appRequest;
+					appResponse.object = appRequest.object;
+					appResponse.request_id = appRequest.id;
+					appResponse.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
+					appResponse.last_concierge_id = new Integer(receivedConciergeId);
+					App app = appHash.get(appRequest.app_id);
+					if (app != null) {
+						Log.d(TAG, "tags count is : " + tags.length);
+						if ("".equals(tags[0])) {
+							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                								
+							  if (responseQ != null) {
+								  Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + " INTO QUEUE");
+								  appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));
+								  responseQ.put(appResponse);
+
+								  }		
+						} else {
+						for (String tag: tags) {
+							tag = tag.trim();
+							Log.d(TAG, "tag is " + tag + " and userId is: " + app.userId);
+							if (tag.equals("" + app.userId)) {
+                                Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + 
+                                		" app id: " + app.appId + " user id: " + app.userId + " INTO QUEUE");
+        						appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));	
+                                LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                	
+							  if (responseQ != null) {
+
+								  responseQ.put(appResponse);
+
+								  }					
+							}
+					}
+					}
+					}
+				}
+//					String[] tags = array.get(i).getString("taglist");
+//					if (app != null && app.userId == req)
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+            }
+			Editor editor = sharedPreferences.edit();
+            Log.d(TAG, "MESSAGE RECEIVED: " + array.length());
+			
+			try {
+				lastConciergeId = ((JSONObject) array.get(0)).getString("mid");
+				editor.putString("lastConciergeId", lastConciergeId);
+				editor.commit();
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            for (AppConnection appConn: appConns.values()) {
+                Log.d(TAG, "JAMES: BROADCASTING TO INTENT FILTER: " + appConn.intentFilterEvent);
+
+	  		          gamingService.sendBroadcast(new Intent(appConn.intentFilterEvent));
+				
+            }
+            }
+
+		} 		  
+		  
+
     
 	private void _startService() {
 		showNotification();
 		Log.d(TAG, "Start service started");
 	//	write("startService");
+		/*
 		timer.scheduleAtFixedRate( new TimerTask() {
 			public void run() { 
 				try {
@@ -272,19 +389,7 @@ public class GamingService extends Service implements LocationListener {
 				counter += 10;
  //               write("Service iteration: " + counter+ 10);
                 Log.d(TAG, "COUNTER: " + counter);
-                /*
-                GameObject go = new GameObject("Testing");
-                JSONObject jo = (JSONObject) Util.toJson(go);
-                Log.d(TAG, "TOJSON IS: " + jo);
-                Log.d(TAG, "------------");
-                Log.d(TAG, "Before FROMJSON");
-                try {
-                Log.d(TAG, "FROMJSON IS: " + Util.fromJson(jo, null, null));
-                } catch (Exception e) {
-                	e.printStackTrace();
-                }
-                Log.d(TAG, "After FROMJSON");
-                */
+
 
                 //   	        sendBroadcast(broadcast);
                 JSONArray array = null;
@@ -370,31 +475,11 @@ public class GamingService extends Service implements LocationListener {
 					
                 }
                 }
-                /*
-                for (int appId : appHash.keySet()) {
-                    Log.d(TAG, "123 Broadcasting to : " + appId);
-                    while (taskList.size() > 0) {
-                    Log.d(TAG, "HERE 1");
-                    String name = taskList.remove(0);
-                    Log.d(TAG, "HERE 2");
-                    
-                    completedTaskList.add(name);
-                    Log.d(TAG, "HERE 3");
-                   
-                    }
-                    Log.d(TAG, "HERE 4");
-                    
-//                    makeGet("http://www.stanford.edu");
-    		        sendBroadcast(appHash.get(appId).intent);
-    		    	}                
- //               showNotification();
-//                for (Intent intent : intentArr) {
-//                	intent.
-//                }
-                */
+
 			} 
 
 			}, 5000, 30000);
+			*/
 
 	}
 	/*

@@ -56,8 +56,11 @@ public class App {
 				  Log.d(tag, "Request waiting on new request");
 				  
 				  AppRequest request = requestQ.take();
-				  Log.d(tag, "Request received is: " + request);				  
-				  if ("message".equals(request.action)) {
+				  Log.d(tag, "Request received is: " + request);	
+				  if ("getMessage".equals(request.action)) {
+					  gamingService.receiveMessage((Integer) request.object);
+					  
+				  } else if ("message".equals(request.action)) {
 					  Log.d(tag, "REQUEST OBJECT IS: " + request.object.getClass().getName());
 					  Message msg = (Message) request.object;
 					  String[] tags = new String[0];				  

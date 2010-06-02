@@ -580,4 +580,17 @@ public class GamingServiceConnection implements ServiceConnection  {
 		grs.sendRequest(appId, Util.toJson(appRequest).toString()); 
 		return true;
 	}	
+	public boolean getMessages(int requestId, int conciergeId) throws RemoteException {
+	    AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+	    appRequest.action = "getMessage";
+	    appRequest.model = "Concierge";
+	    appRequest.path = "";
+	    appRequest.object = conciergeId;
+	    grs.sendRequest(appId, Util.toJson(appRequest).toString());
+		return true;
+	}
+	public int getLastConciergeId() throws RemoteException {
+		return grs.getLastConciergeId();
+
+	}
 }

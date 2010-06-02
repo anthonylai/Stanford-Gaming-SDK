@@ -9,6 +9,7 @@ public class AppResponse {
 	public String result_code;
 	public String[] error;
 	public Object object;
+	public int last_concierge_id;
 	
 
 	public String toString() {

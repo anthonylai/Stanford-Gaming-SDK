@@ -129,6 +129,14 @@ reply.writeNoException();
 reply.writeString(_result);
 return true;
 }
+case TRANSACTION_getLastConciergeId:
+{
+data.enforceInterface(DESCRIPTOR);
+int _result = this.getLastConciergeId();
+reply.writeNoException();
+reply.writeInt(_result);
+return true;
+}
 }
 return super.onTransact(code, data, reply, flags);
 }
@@ -296,6 +304,23 @@ _data.recycle();
 }
 return _result;
 }
+public int getLastConciergeId() throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+android.os.Parcel _reply = android.os.Parcel.obtain();
+int _result;
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+mRemote.transact(Stub.TRANSACTION_getLastConciergeId, _data, _reply, 0);
+_reply.readException();
+_result = _reply.readInt();
+}
+finally {
+_reply.recycle();
+_data.recycle();
+}
+return _result;
+}
 }
 static final int TRANSACTION_getCounter = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
 static final int TRANSACTION_getLocationString = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
@@ -305,6 +330,7 @@ static final int TRANSACTION_doGet = (android.os.IBinder.FIRST_CALL_TRANSACTION 
 static final int TRANSACTION_sendRequest = (android.os.IBinder.FIRST_CALL_TRANSACTION + 5);
 static final int TRANSACTION_hasPendingNotification = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
 static final int TRANSACTION_getNextPendingNotification = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
+static final int TRANSACTION_getLastConciergeId = (android.os.IBinder.FIRST_CALL_TRANSACTION + 8);
 }
 public int getCounter() throws android.os.RemoteException;
 public java.lang.String getLocationString() throws android.os.RemoteException;
@@ -318,4 +344,5 @@ public void doGet(java.lang.String url) throws android.os.RemoteException;
 public boolean sendRequest(int appId, java.lang.String request) throws android.os.RemoteException;
 public boolean hasPendingNotification(int appId, java.lang.String intentFilterEvent) throws android.os.RemoteException;
 public java.lang.String getNextPendingNotification(int appId, java.lang.String intentFilterEvent) throws android.os.RemoteException;
+public int getLastConciergeId() throws android.os.RemoteException;
 }

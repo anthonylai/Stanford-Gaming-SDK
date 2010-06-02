@@ -325,7 +325,10 @@ public class Util {
             httpclient.setParams(httpParams);
             Log.d(TAG, "HTTPPARAMS IS: " + httpParams);
 */
+			Log.d(TAG, "EXECUTING HTTP REQUEST");
 			HttpResponse response = httpclient.execute(hrb);
+			Log.d(TAG, "COMPLETED HTTP REQUEST, GETTING RESPONSE");
+
 			InputStream is = response.getEntity().getContent();
 			BufferedReader sr = new BufferedReader(new InputStreamReader(is));
 			String line = "";

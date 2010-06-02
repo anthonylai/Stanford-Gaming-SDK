@@ -24,5 +24,6 @@ interface GamingRemoteService {
 
 	String getNextPendingNotification(int appId, String intentFilterEvent); 
 	
+	int getLastConciergeId();
 
 }
