@@ -58,7 +58,7 @@ public class App {
 				  AppRequest request = requestQ.take();
 				  Log.d(tag, "Request received is: " + request);	
 				  if ("getMessage".equals(request.action)) {
-					  gamingService.receiveMessage((Integer) request.object);
+					  gamingService.receiveMessage((Integer) request.object, request.model);
 					  
 				  } else if ("message".equals(request.action)) {
 					  Log.d(tag, "REQUEST OBJECT IS: " + request.object.getClass().getName());

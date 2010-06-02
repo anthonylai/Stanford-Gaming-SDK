@@ -148,7 +148,7 @@ public class GamingService extends Service implements LocationListener {
 			return;
 		}
 		public int getLastConciergeId() throws RemoteException {
-			receiveMessage(0);
+			receiveMessage(0, "1");
 			return new Integer(lastConciergeId);
 		}
 		/*
@@ -260,7 +260,7 @@ public class GamingService extends Service implements LocationListener {
     	return 1;
     }
 
-	  public void receiveMessage(int conciergeId) {
+	  public void receiveMessage(int conciergeId, String limit) {
 		  lastConciergeId = "" + conciergeId;
 		  String receivedConciergeId = null;
 		  try {
@@ -277,11 +277,13 @@ public class GamingService extends Service implements LocationListener {
 
             //   	        sendBroadcast(broadcast);
             JSONArray array = null;
+            /*
             if ("0".equals(lastConciergeId)) {
                array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, "1");
             }
+            */
 
-            array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, "10000");
+            array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, limit);
 			try {
 				receivedConciergeId = ((JSONObject) array.get(0)).getString("mid");
 
