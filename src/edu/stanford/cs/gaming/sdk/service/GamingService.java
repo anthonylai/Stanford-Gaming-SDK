@@ -69,6 +69,8 @@ public class GamingService extends Service implements LocationListener {
     private List<String> completedTaskList = new ArrayList<String>();
     public static List<AppRequest> requestQ;
     private GamingService gamingService = this;
+ //   private static final String CONCIERGE_URL = "http://171.64.73.173/community_vibe/concierge/rpc.php";
+
     private static final String CONCIERGE_URL = "http://colby.stanford.edu/community_vibe/concierge/rpc.php";
     private SharedPreferences sharedPreferences;
     private String lastConciergeId;
