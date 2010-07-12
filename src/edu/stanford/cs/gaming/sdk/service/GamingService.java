@@ -53,8 +53,8 @@ public class GamingService extends Service implements LocationListener {
 //	public static final String BROADCAST_ACTION=
 //		"edu.stanford.cs.gaming.sdk.Event";
 //	private Intent broadcast=new Intent(BROADCAST_ACTION);	
-	public static String gamingServer = "http://colby.stanford.edu:3000";
-	private Timer timer = new Timer();
+	public static String gamingServer = "http://171.64.73.173:3000";
+	private Timer timer = new Timer(); 
 	ArrayList<Intent> intentArr = new ArrayList<Intent>();
 	String testString = new String();
 	private static final String TAG = "GamingService";	
@@ -71,7 +71,7 @@ public class GamingService extends Service implements LocationListener {
     private GamingService gamingService = this;
  //   private static final String CONCIERGE_URL = "http://171.64.73.173/community_vibe/concierge/rpc.php";
 
-    private static final String CONCIERGE_URL = "http://colby.stanford.edu/community_vibe/concierge/rpc.php";
+    private static final String CONCIERGE_URL = "http://171.64.73.173/community_vibe/concierge/rpc.php";
     private SharedPreferences sharedPreferences;
     private String lastConciergeId;
     private static final String CONCIERGE_NAME = "gaming";
@@ -150,7 +150,13 @@ public class GamingService extends Service implements LocationListener {
 			return;
 		}
 		public int getLastConciergeId() throws RemoteException {
-			receiveMessage(0, "1");
+			try {
+				receiveMessage(0, "1");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new RemoteException();
+			}
 			return new Integer(lastConciergeId);
 		}
 		/*
@@ -262,7 +268,7 @@ public class GamingService extends Service implements LocationListener {
     	return 1;
     }
 
-	  public void receiveMessage(int conciergeId, String limit) {
+	  public void receiveMessage(int conciergeId, String limit) throws IOException, JSONException {
 		  lastConciergeId = "" + conciergeId;
 		  String receivedConciergeId = null;
 		  try {

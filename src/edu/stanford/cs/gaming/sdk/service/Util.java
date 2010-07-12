@@ -295,7 +295,8 @@ public class Util {
 			HttpRequestBase hrb = null;			
 
 			DefaultHttpClient httpclient = new DefaultHttpClient();
-			StringEntity se;		
+			StringEntity se;	
+			Log.d(TAG, "GAMINGSERVICE.GAMINGSERVER IS: " + GamingService.gamingServer);
 			if ("get".equals(request.action)) {
 				hrb = new HttpGet(GamingService.gamingServer + constructParams(request));
 				
@@ -325,6 +326,8 @@ public class Util {
             httpclient.setParams(httpParams);
             Log.d(TAG, "HTTPPARAMS IS: " + httpParams);
 */
+			hrb.setHeader("Accept", "application/json"); 
+			hrb.setHeader("Content-type", "application/json");			
 			Log.d(TAG, "EXECUTING HTTP REQUEST");
 			HttpResponse response = httpclient.execute(hrb);
 			Log.d(TAG, "COMPLETED HTTP REQUEST, GETTING RESPONSE");

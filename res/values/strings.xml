@@ -2,4 +2,9 @@
 <resources>
     <string name="hello">Hello World, GamingTestActivity!</string>
     <string name="app_name">Stanford Gaming SDK</string>
+<string name="dialog_layer_title">Layer</string>
+<string-array name="dialog_layer_values">
+<item>Footprints</item>
+<item>Locations</item><item>Satellite</item>
+</string-array>
 </resources>

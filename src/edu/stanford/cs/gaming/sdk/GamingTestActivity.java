@@ -52,7 +52,7 @@ public class GamingTestActivity extends Activity {
         putObjButton.setOnClickListener(new OnClickListener() {
           	public void onClick(View v){
  //         		try {
-
+ 
           			Log.d(TAG, "Object: Test" + counter);
 //					gameConn.grs.putGameObject((new GameObject("Test" + (counter++))).toJson().toString());
 					try {

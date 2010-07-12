@@ -51,12 +51,15 @@ public class App {
   
   class ProcessThread extends Thread {
 	  public void run() {
+		  AppRequest request = null;
+		  AppResponse response = null;
 		  try {
 			  while (true) {
 				  Log.d(tag, "Request waiting on new request");
 				  
-				  AppRequest request = requestQ.take();
-				  Log.d(tag, "Request received is: " + request);	
+				  request = requestQ.take();
+				  Log.d(tag, "Request received is: " + request);
+				  
 				  if ("getMessage".equals(request.action)) {
 					  gamingService.receiveMessage((Integer) request.object, request.model);
 					  
@@ -80,7 +83,6 @@ public class App {
 				  } else {
 //				  sleep(2000);
 //				  AppResponse response = new AppResponse();
-				  AppResponse response = null;
 				  try {
 //					  Log.d(tag, "Group returned is: " + Util.makeGet(gamingService.gamingServer + "/groups/1"));
 //					response.object = Util.fromJson(new JSONObject(Util.makeGet(gamingService.gamingServer + "/groups/1")), null, null);
@@ -104,9 +106,26 @@ public class App {
 				  }
 			  }
 			  }
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			response = new AppResponse();
+			response.request_id = request.id;
+			response.appRequest = request;
+			response.result_code = GamingServiceConnection.RESULT_CODE_ERROR;
+			response.error = new String[] { "Network issue" };
+			LinkedBlockingQueue<AppResponse> responseQ = responseQs.get(request.intentFilterEvent);
+			if (responseQ != null) {
+			  try {
+				responseQ.put(response);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
+		          gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
+			  }
+			
 		}
 	  }	  
   }

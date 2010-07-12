@@ -1,13 +1,16 @@
 package edu.stanford.concierge;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
@@ -38,12 +41,12 @@ public class Concierge
 	 * @param key			the secret key for the principal
 	 * @param callback		an optional url for callbacks
 	 * @return				the id of the newly registered principal, or -1 if it fails
+	 * @throws IOException 
 	 */
-	public static int registerPrincipal(String conciergeURL, String name, String key, String callback)
+	public static int registerPrincipal(String conciergeURL, String name, String key, String callback) throws IOException
 	{
 		int retVal = -1;
-		try
-		{
+
 			URL url = new URL(conciergeURL);
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
@@ -56,12 +59,7 @@ public class Concierge
 		    String response = sendRequest(conciergeURL, data);
 		    
 		    retVal = Integer.parseInt(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
+
 		return retVal;
 	}	
 	
@@ -71,12 +69,12 @@ public class Concierge
 	 * @param name			the name of the principal
 	 * @param key			the secret key for the principal
 	 * @return				true of successful
+	 * @throws IOException 
 	 */
-	public static boolean unregisterPrincipal(String conciergeURL, String name, String key)
+	public static boolean unregisterPrincipal(String conciergeURL, String name, String key) throws IOException
 	{
 		boolean retVal = false;
-		try
-		{
+
 			URL url = new URL(conciergeURL);
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
@@ -88,12 +86,7 @@ public class Concierge
 		    String response = sendRequest(conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
+
 		return retVal;
 	}
 	
@@ -104,12 +97,13 @@ public class Concierge
 	 * @param since			id of the last message received
 	 * @param limit			maximum number of messages to return
 	 * @return				an array of all the messages in the stream
+	 * @throws IOException 
+	 * @throws JSONException 
 	 */
-	public static JSONArray getPrincipalStream(String conciergeURL, String name, String since, String limit)
+	public static JSONArray getPrincipalStream(String conciergeURL, String name, String since, String limit) throws IOException, JSONException
 	{
 		JSONArray retVal = new JSONArray();
-		try
-		{
+
 			URL url = new URL(conciergeURL);
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
@@ -124,11 +118,7 @@ public class Concierge
 //		    Object obj = JSONValue.parse(response);
 //		    retVal = (JSONArray) obj;
 		    
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}
@@ -139,12 +129,13 @@ public class Concierge
 	 * @param since			id of the last message received
 	 * @param limit			maximum number of messages to return
 	 * @return				an array of all the messages in the stream
+	 * @throws IOException 
+	 * @throws JSONException 
 	 */
-	public static JSONArray getGlobalStream(String conciergeURL, String since, String limit)
+	public static JSONArray getGlobalStream(String conciergeURL, String since, String limit) throws IOException, JSONException
 	{
 		JSONArray retVal = new JSONArray();
-		try
-		{
+
 			URL url = new URL(conciergeURL);
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
@@ -157,13 +148,8 @@ public class Concierge
 		    retVal = new JSONArray(response);
 //		    Object obj = JSONValue.parse(response);
 //		    retVal = (JSONArray) obj;
-		    
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
+
+
 		return retVal;
 	}
 	
@@ -175,11 +161,10 @@ public class Concierge
 	 * @param limit			maximum number of messages to return
 	 * @return				an array of all the messages in the stream
 	 */
-	public static JSONArray getTaglistStream(String conciergeURL, String[] tags, String since, String limit)
+	public static JSONArray getTaglistStream(String conciergeURL, String[] tags, String since, String limit) throws IOException, JSONException
 	{
 		JSONArray retVal = new JSONArray();
-		try
-		{
+
 			URL url = new URL(conciergeURL);
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
@@ -194,12 +179,7 @@ public class Concierge
 //		    Object obj = JSONValue.parse(response);
 //		    retVal = (JSONArray) obj;
 		    
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
+
 		return retVal;
 	}
 	
@@ -208,13 +188,13 @@ public class Concierge
 	 * @param conciergeURL	the url of the concierge server
 	 * @param data			the data payload for the server
 	 * @return				the response from the server
+	 * @throws IOException 
 	 */
-	private static String sendRequest(String conciergeURL, String data)
+	private static String sendRequest(String conciergeURL, String data) throws IOException
 	{	
 		
 		String line = "";
-		try
-		{
+
 			URL url = new URL(conciergeURL);
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
@@ -226,11 +206,7 @@ public class Concierge
 		    line = rd.readLine();
 		    wr.close();
 		    rd.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return line;
 		    
@@ -246,8 +222,7 @@ public class Concierge
 	 */
 	public Concierge(String conciergeURL, String name, String key) throws Exception
 	{	
-		try
-		{	
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("authenticatePrincipal", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(key, "UTF-8");
@@ -265,11 +240,7 @@ public class Concierge
 		    	this._key = key;
 		    	this._principalID = Integer.parseInt(response);
 		    }
-		}
-		catch(Exception e)
-		{
-			throw e;
-		}
+
 	}
 	
 
@@ -278,12 +249,12 @@ public class Concierge
 	 * Register an interest on a set of tags
 	 * @param tags			an array of tags
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean registerTagInterest(String[] tags)
+	public boolean registerTagInterest(String[] tags) throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("registerTagInterest", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -292,11 +263,7 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}
@@ -305,12 +272,12 @@ public class Concierge
 	 * Unregister an interest on a set of tags
 	 * @param tags			an array of tags
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean unregisterTagInterest(String[] tags)
+	public boolean unregisterTagInterest(String[] tags) throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("unregisterTagInterest", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -319,24 +286,19 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
+
 		return retVal;
 	}
 
 	/**
 	 * Unregister all tag interests
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean unregisterAllTagInterests()
+	public boolean unregisterAllTagInterests() throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("unregisterAllTagInterests", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -344,11 +306,7 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}
@@ -356,12 +314,12 @@ public class Concierge
 	/**
 	 * Gets all of your tag interests
 	 * @return				an array of string arrays containing the tags
+	 * @throws IOException 
 	 */
-	public String[][] getTagInterests()
+	public String[][] getTagInterests() throws IOException
 	{	
 		String[][] retVal = new String[0][0];
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("getTagInterests", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -383,11 +341,7 @@ public class Concierge
 		    	}
 		    }
 		    //retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}
@@ -395,12 +349,12 @@ public class Concierge
 	/**
 	 * Register an interest in the global stream
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean registerGlobalInterest()
+	public boolean registerGlobalInterest() throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("registerGlobalInterest", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -408,11 +362,7 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}
@@ -420,12 +370,12 @@ public class Concierge
 	/**
 	 * Unregister an interest in the global stream
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean unregisterGlobalInterest()
+	public boolean unregisterGlobalInterest() throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("unregisterGlobalInterest", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -433,12 +383,7 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
+
 		return retVal;
 	}
 	
@@ -446,12 +391,12 @@ public class Concierge
 	 * Register an interest in a specific Principal
 	 * @param name			the name of the principal
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean registerPrincipalInterest(String name)
+	public boolean registerPrincipalInterest(String name) throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("registerPrincipalInterest", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -460,11 +405,7 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}	
@@ -473,11 +414,10 @@ public class Concierge
 	 * Get the set of principals you have an interest in
 	 * @return				the set of principals you have an interest in
 	 */
-	public JSONArray getPrincipalInterests()
+	public JSONArray getPrincipalInterests() throws IOException, JSONException
 	{
 		JSONArray retVal = new JSONArray();
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("getPrincipalInterests", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -487,12 +427,7 @@ public class Concierge
 //		    Object obj = JSONValue.parse(response);
 //		    retVal = (JSONArray) obj;
 		    
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
+
 		return retVal;
 	}
 	
@@ -500,12 +435,12 @@ public class Concierge
 	 * Unregister an interest in a specific Principal
 	 * @param name			the name of the principal
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean unregisterPrincipalInterest(String name)
+	public boolean unregisterPrincipalInterest(String name) throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("unregisterPrincipalInterest", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -514,11 +449,7 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}	
@@ -526,12 +457,12 @@ public class Concierge
 	/**
 	 * Unregister your interest in all of the principals
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean unregisterAllPrincipalInterests()
+	public boolean unregisterAllPrincipalInterests() throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("unregisterAllPrincipalInterests", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -539,11 +470,7 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}	
@@ -551,12 +478,12 @@ public class Concierge
 	/**
 	 * Unregister all of your interests
 	 * @return				true if it was successful
+	 * @throws IOException 
 	 */
-	public boolean unregisterAllInterests()
+	public boolean unregisterAllInterests() throws IOException
 	{	
 		boolean retVal = false;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("unregisterAllInterests", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -564,11 +491,7 @@ public class Concierge
 		    String response = sendRequest(_conciergeURL, data);
 		    
 		    retVal = Boolean.parseBoolean(response);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}
@@ -578,12 +501,12 @@ public class Concierge
 	 * @param content		The actual message
 	 * @param tags			an array of tags
 	 * @return				the id of the new message, or -1 if it fails
+	 * @throws IOException 
 	 */
-	public int postMessage(JSONObject content, String[] tags)
+	public int postMessage(JSONObject content, String[] tags) throws IOException
 	{	
 		int retVal = -1;
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("postMessage", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -600,12 +523,7 @@ public class Concierge
 		    }
 			Log.d("CONCIERGE", "MESSAGE_ID IS" + retVal);
 
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
+
 		return retVal;
 	}	
 	
@@ -615,11 +533,10 @@ public class Concierge
 	 * @param limit			maximum number of messages to return
 	 * @return				an array of all the messages in the stream
 	 */
-	public JSONArray getPrincipalInterestStream(String since, String limit)
+	public JSONArray getPrincipalInterestStream(String since, String limit) throws IOException, JSONException
 	{
 		JSONArray retVal = new JSONArray();
-		try
-		{
+
 			String data = URLEncoder.encode("do", "UTF-8") + "=" + URLEncoder.encode("getPrincipalInterestStream", "UTF-8");
 		    data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(_name, "UTF-8");
 		    data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(_key, "UTF-8");
@@ -631,11 +548,7 @@ public class Concierge
 //		    Object obj = JSONValue.parse(response);
 //		    retVal = (JSONArray) obj;
 		    
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+
 		
 		return retVal;
 	}
