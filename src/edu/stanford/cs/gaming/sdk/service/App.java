@@ -53,80 +53,82 @@ public class App {
 	  public void run() {
 		  AppRequest request = null;
 		  AppResponse response = null;
-		  try {
-			  while (true) {
+		  while (true) {		  
+			  try {
+
 				  Log.d(tag, "Request waiting on new request");
-				  
+
 				  request = requestQ.take();
 				  Log.d(tag, "Request received is: " + request);
-				  
+
 				  if ("getMessage".equals(request.action)) {
 					  gamingService.receiveMessage((Integer) request.object, request.model);
-					  
+
 				  } else if ("message".equals(request.action)) {
 					  Log.d(tag, "REQUEST OBJECT IS: " + request.object.getClass().getName());
 					  Message msg = (Message) request.object;
 					  String[] tags = new String[0];				  
 					  if (msg.toUsers != null) {
-					  tags = new String[msg.toUsers.length];
-					  for (int i=0; i < msg.toUsers.length; i++) {
-//						  tags[i] = new String(GamingServiceConnection.GAMING_SERVICE_PREFIX + 
-//								  "." + msg.toUsers[i]);
-						  tags[i] = "" + msg.toUsers[i].id;						  
-						  Log.d(tag, "HERE HERE IN MESSAGE LOOP");
+						  tags = new String[msg.toUsers.length];
+						  for (int i=0; i < msg.toUsers.length; i++) {
+							  //						  tags[i] = new String(GamingServiceConnection.GAMING_SERVICE_PREFIX + 
+							  //								  "." + msg.toUsers[i]);
+							  tags[i] = "" + msg.toUsers[i].id;						  
+							  Log.d(tag, "HERE HERE IN MESSAGE LOOP");
+						  }
 					  }
-					  }
-		                Log.d(tag, "MESSAGE BEFORE POST: ");
-		                gamingService.getConcierge().postMessage((JSONObject) Util.toJson(request), tags);
-		                Log.d(tag, "MESSAGE POSTED: ");
-					  
-				  } else {
-//				  sleep(2000);
-//				  AppResponse response = new AppResponse();
-				  try {
-//					  Log.d(tag, "Group returned is: " + Util.makeGet(gamingService.gamingServer + "/groups/1"));
-//					response.object = Util.fromJson(new JSONObject(Util.makeGet(gamingService.gamingServer + "/groups/1")), null, null);
-//						response.object = Util.fromJson(new JSONObject(Util.makeRequest(request)), null, null);
-						response = (AppResponse) Util.fromJson(new JSONObject(Util.makeRequest(request)), null, null);					  
+					  Log.d(tag, "MESSAGE BEFORE POST: ");
+					  gamingService.getConcierge().postMessage((JSONObject) Util.toJson(request), tags);
+					  Log.d(tag, "MESSAGE POSTED: ");
 
-				  } catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				  } else {
+					  //				  sleep(2000);
+					  //				  AppResponse response = new AppResponse();
+					  try {
+						  //					  Log.d(tag, "Group returned is: " + Util.makeGet(gamingService.gamingServer + "/groups/1"));
+						  //					response.object = Util.fromJson(new JSONObject(Util.makeGet(gamingService.gamingServer + "/groups/1")), null, null);
+						  //						response.object = Util.fromJson(new JSONObject(Util.makeRequest(request)), null, null);
+						  response = (AppResponse) Util.fromJson(new JSONObject(Util.makeRequest(request)), null, null);					  
+
+					  } catch (JSONException e) {
+						  // TODO Auto-generated catch block
+						  e.printStackTrace();
+					  }
+					  response.request_id = request.id;
+					  response.appRequest = request;				  
+					  //				  response.object = request;
+					  Log.d(tag, "RESPONSE RECEIVED FROM SERVER IS " + response);
+					  //ASLAI: PUT THEM INTO SEPARATE QUEUES
+					  LinkedBlockingQueue<AppResponse> responseQ = responseQs.get(request.intentFilterEvent);
+					  if (responseQ != null) {
+						  responseQ.put(response);
+						  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
+						  gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
+					  }
+				  }
+
+			  } catch (Exception e) {
+				  // TODO Auto-generated catch block
+				  e.printStackTrace();
+				  response = new AppResponse();
 				  response.request_id = request.id;
-				  response.appRequest = request;				  
-//				  response.object = request;
-				  Log.d(tag, "RESPONSE RECEIVED FROM SERVER IS " + response);
-				  //ASLAI: PUT THEM INTO SEPARATE QUEUES
+				  response.appRequest = request;
+				  response.result_code = GamingServiceConnection.RESULT_CODE_ERROR;
+				  response.error = new String[] { "Network issue" };
 				  LinkedBlockingQueue<AppResponse> responseQ = responseQs.get(request.intentFilterEvent);
 				  if (responseQ != null) {
-				  responseQ.put(response);
-				  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
-  		          gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
+					  try {
+						  responseQ.put(response);
+					  } catch (InterruptedException e1) {
+						  // TODO Auto-generated catch block
+						  e1.printStackTrace();
+					  }
+					  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
+					  gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
 				  }
+
 			  }
-			  }
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			response = new AppResponse();
-			response.request_id = request.id;
-			response.appRequest = request;
-			response.result_code = GamingServiceConnection.RESULT_CODE_ERROR;
-			response.error = new String[] { "Network issue" };
-			LinkedBlockingQueue<AppResponse> responseQ = responseQs.get(request.intentFilterEvent);
-			if (responseQ != null) {
-			  try {
-				responseQ.put(response);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
-		          gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
-			  }
-			
-		}
+		  }
 	  }	  
   }
 }
