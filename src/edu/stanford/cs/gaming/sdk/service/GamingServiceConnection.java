@@ -20,6 +20,8 @@ import android.util.Log;
 
 public class GamingServiceConnection implements ServiceConnection  {
 	public static final String RESULT_CODE_ERROR = "error";
+	public static final String RESULT_CODE_FAILURE = "failure";
+	
 	public static final String RESULT_CODE_SUCCESS = "success";	
 	 public static final int OBJ_PROPERTIES_INT = 0;
 	 public static final int OBJ_PROPERTIES_FLOAT = 1;
