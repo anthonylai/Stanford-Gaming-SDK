@@ -62,8 +62,26 @@ public class App {
 				  Log.d(tag, "Request received is: " + request);
 
 				  if ("getMessage".equals(request.action)) {
-					  gamingService.receiveMessage((Integer) request.object, request.model);
-
+					  boolean messageReceived = false;
+					  messageReceived = gamingService.receiveMessage((Integer) request.object, request.model);
+					  if (!messageReceived) {
+						  response = new AppResponse();
+						  response.request_id = request.id;
+						  response.appRequest = request;
+						  response.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
+						  LinkedBlockingQueue<AppResponse> responseQ = responseQs.get(request.intentFilterEvent);
+						  if (responseQ != null) {
+							  try {
+								  responseQ.put(response);
+							  } catch (InterruptedException e1) {
+								  // TODO Auto-generated catch block
+								  e1.printStackTrace();
+							  }
+							  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
+							  gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
+						  }					  
+						  
+					  }
 				  } else if ("message".equals(request.action)) {
 					  Log.d(tag, "REQUEST OBJECT IS: " + request.object.getClass().getName());
 					  Message msg = (Message) request.object;
