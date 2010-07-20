@@ -4,6 +4,7 @@ public class Group {
 	public int id;
 	public int app_id;
 	public String name;
+	public int owner_id;
 	public User[] users;
 
 	public Group() {}
