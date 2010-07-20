@@ -80,6 +80,21 @@ public class App {
 					  Log.d(tag, "MESSAGE BEFORE POST: ");
 					  gamingService.getConcierge().postMessage((JSONObject) Util.toJson(request), tags);
 					  Log.d(tag, "MESSAGE POSTED: ");
+					  response = new AppResponse();
+					  response.request_id = request.id;
+					  response.appRequest = request;
+					  response.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
+					  LinkedBlockingQueue<AppResponse> responseQ = responseQs.get(request.intentFilterEvent);
+					  if (responseQ != null) {
+						  try {
+							  responseQ.put(response);
+						  } catch (InterruptedException e1) {
+							  // TODO Auto-generated catch block
+							  e1.printStackTrace();
+						  }
+						  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
+						  gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
+					  }					  
 
 				  } else {
 					  //				  sleep(2000);
