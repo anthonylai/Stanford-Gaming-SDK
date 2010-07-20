@@ -293,7 +293,10 @@ public class GamingService extends Service implements LocationListener {
 
             array = Concierge.getPrincipalStream(CONCIERGE_URL, "gaming", lastConciergeId, limit);
 			try {
-				receivedConciergeId = ((JSONObject) array.get(0)).getString("mid");
+				if (array != null && array.length() > 0)
+				   receivedConciergeId = ((JSONObject) array.get(0)).getString("mid");
+				else 
+				   receivedConciergeId = "" + lastConciergeId;
 
 
 			} catch (JSONException e) {
@@ -362,7 +365,10 @@ public class GamingService extends Service implements LocationListener {
             Log.d(TAG, "MESSAGE RECEIVED: " + array.length());
 			
 			try {
-				lastConciergeId = ((JSONObject) array.get(0)).getString("mid");
+				if (array != null && array.length() > 0)
+					   receivedConciergeId = ((JSONObject) array.get(0)).getString("mid");
+					else 
+					   receivedConciergeId = "" + lastConciergeId;				
 				editor.putString("lastConciergeId", lastConciergeId);
 				editor.commit();
 
