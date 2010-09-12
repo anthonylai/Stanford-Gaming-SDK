@@ -325,14 +325,17 @@ public class GamingService extends Service implements LocationListener {
 					appResponse.request_id = appRequest.id;
 					appResponse.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
 					appResponse.last_concierge_id = new Integer(receivedConciergeId);
+					Message msg = (Message) appRequest.object;
+					
 					App app = appHash.get(appRequest.app_id);
 					if (app != null) {
 						Log.d(TAG, "tags count is : " + tags.length);
 						if ("".equals(tags[0])) {
-							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                								
+							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(msg.toIntentFilterEvent);                								
 							  if (responseQ != null) {
 								  Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + " INTO QUEUE");
-								  appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));
+								  Log.d(TAG, "JAMES: IntentFilterEvent -- " + appRequest.intentFilterEvent + ": Request id -- " + appResponse.request_id);
+								  appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, msg.toIntentFilterEvent));
 								  responseQ.put(appResponse);
 
 								  }		
@@ -341,15 +344,20 @@ public class GamingService extends Service implements LocationListener {
 							tag = tag.trim();
 							Log.d(TAG, "tag is " + tag + " and userId is: " + app.userId);
 							if (tag.equals("" + app.userId)) {
-                                Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + 
+                                Log.d(TAG, "JAMES123: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + 
                                 		" app id: " + app.appId + " user id: " + app.userId + " INTO QUEUE");
+								  Log.d(TAG, "JAMES123: IntentFilterEvent -- " + appRequest.intentFilterEvent + ": Request id -- " + appResponse.request_id);
+
         						appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));	
                                 LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                	
 							  if (responseQ != null) {
+								  Log.d(TAG, "JAMES123: Placed into response queue for pickup");
 
 								  responseQ.put(appResponse);
 
-								  }					
+								  }		else {
+									  Log.d(TAG, "JAMES123: ResponseQ is null");
+								  }
 							}
 					}
 					}

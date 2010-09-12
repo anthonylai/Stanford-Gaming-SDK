@@ -527,10 +527,10 @@ public class GamingServiceConnection implements ServiceConnection  {
 
 	public boolean sendMessage(int requestId, Object msg, int type, User fromUser, Group group, User[] toUsers, long dateTime, String intentFilterEvent) throws RemoteException {
 		AppRequest appRequest = null;
-		if (intentFilterEvent == null)
+//		if (intentFilterEvent == null)
 			appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.intentFilterEvent);
-		else
-	    	appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, "edu.stanford.cs.gaming.sdk." + appId + "." + intentFilterEvent);
+//		else
+//	    	appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, "edu.stanford.cs.gaming.sdk." + appId + "." + intentFilterEvent);
 			
     	appRequest.action = "message";
     	Message message = new Message();
@@ -538,6 +538,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		message.fromGroup = group;
 		message.fromUser = fromUser;
 		message.msg = msg;
+		message.toIntentFilterEvent = intentFilterEvent;
 		
 		if (toUsers != null) {
 			message.toUsers = new User[toUsers.length];

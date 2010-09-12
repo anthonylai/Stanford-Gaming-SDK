@@ -7,6 +7,7 @@ public class Message {
 	public int type;
 	public Object msg;
 	public long dateTime;
+	public String toIntentFilterEvent;
 	
 	
 

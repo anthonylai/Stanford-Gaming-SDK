@@ -40,9 +40,15 @@ public class App {
   }
   
   public void addQueue(String intentFilterEvent) {
+  	Log.d(tag, "Adding ResponseQ for : " + intentFilterEvent);
+
 	  if (responseQs.get(intentFilterEvent) == null) {
 		  responseQs.put(intentFilterEvent, new LinkedBlockingQueue<AppResponse>()); 
+		  	Log.d(tag, "Added ResponseQ for : " + intentFilterEvent);
+
 	  }
+	  	Log.d(tag, "Code ended for AddQueue " + intentFilterEvent);
+
   }
   
   public void stopService() {
