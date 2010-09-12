@@ -538,7 +538,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		message.fromGroup = group;
 		message.fromUser = fromUser;
 		message.msg = msg;
-		message.toIntentFilterEvent = intentFilterEvent;
+		message.toIntentFilterEvent = "edu.stanford.cs.gaming.sdk." + appId + "." + intentFilterEvent;
 		
 		if (toUsers != null) {
 			message.toUsers = new User[toUsers.length];
