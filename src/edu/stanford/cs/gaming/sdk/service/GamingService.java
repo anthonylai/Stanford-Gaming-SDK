@@ -55,7 +55,7 @@ public class GamingService extends Service implements LocationListener {
 //	private Intent broadcast=new Intent(BROADCAST_ACTION);	
 //	public static String gamingServer = "http://171.64.73.173:3000";
 //	public static String gamingServer = "http://colby.stanford.edu/gaming";
-	public static String gamingServer = "http://moovy.heroku.com";
+	public static String gamingServer = "http://happyfeet.heroku.com";
 
 	private Timer timer = new Timer(); 
 	ArrayList<Intent> intentArr = new ArrayList<Intent>();
