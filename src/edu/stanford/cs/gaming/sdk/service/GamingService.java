@@ -326,16 +326,16 @@ public class GamingService extends Service implements LocationListener {
 					appResponse.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
 					appResponse.last_concierge_id = new Integer(receivedConciergeId);
 					Message msg = (Message) appRequest.object;
-					
+					appRequest.intentFilterEvent = msg.toIntentFilterEvent;
 					App app = appHash.get(appRequest.app_id);
 					if (app != null) {
 						Log.d(TAG, "tags count is : " + tags.length);
 						if ("".equals(tags[0])) {
-							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(msg.toIntentFilterEvent);                								
+							LinkedBlockingQueue<AppResponse> responseQ = appHash.get(appRequest.app_id).responseQs.get(appRequest.intentFilterEvent);                								
 							  if (responseQ != null) {
 								  Log.d(TAG, "JAMES: PUTTING RESPONSE WITH REQUEST ID: " + appResponse.request_id + " INTO QUEUE");
 								  Log.d(TAG, "JAMES: IntentFilterEvent -- " + appRequest.intentFilterEvent + ": Request id -- " + appResponse.request_id);
-								  appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, msg.toIntentFilterEvent));
+								  appConns.put(appRequest.intentFilterEvent, new AppConnection(appRequest.app_id, appRequest.intentFilterEvent));
 								  responseQ.put(appResponse);
 
 								  }		
