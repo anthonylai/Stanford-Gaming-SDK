@@ -89,8 +89,10 @@ public class App {
 						  
 					  }
 				  } else if ("message".equals(request.action)) {
+					  String intentFilterEvent = request.intentFilterEvent;
 					  Log.d(tag, "REQUEST OBJECT IS: " + request.object.getClass().getName());
 					  Message msg = (Message) request.object;
+					  request.intentFilterEvent = msg.toIntentFilterEvent;
 					  String[] tags = new String[0];				  
 					  if (msg.toUsers != null) {
 						  tags = new String[msg.toUsers.length];
@@ -103,7 +105,8 @@ public class App {
 					  }
 					  Log.d(tag, "MESSAGE BEFORE POST: ");
 					  gamingService.getConcierge().postMessage((JSONObject) Util.toJson(request), tags);
-					  Log.d(tag, "MESSAGE POSTED: ");
+					  Log.d(tag, "MESSAGE POSTED: " + request.intentFilterEvent);
+					  request.intentFilterEvent = intentFilterEvent;
 					  response = new AppResponse();
 					  response.request_id = request.id;
 					  response.appRequest = request;

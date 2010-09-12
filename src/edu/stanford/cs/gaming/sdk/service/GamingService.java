@@ -325,8 +325,8 @@ public class GamingService extends Service implements LocationListener {
 					appResponse.request_id = appRequest.id;
 					appResponse.result_code = GamingServiceConnection.RESULT_CODE_SUCCESS;
 					appResponse.last_concierge_id = new Integer(receivedConciergeId);
-					Message msg = (Message) appRequest.object;
-					appRequest.intentFilterEvent = msg.toIntentFilterEvent;
+//					Message msg = (Message) appRequest.object;
+//					appRequest.intentFilterEvent = msg.toIntentFilterEvent;
 					App app = appHash.get(appRequest.app_id);
 					if (app != null) {
 						Log.d(TAG, "tags count is : " + tags.length);
