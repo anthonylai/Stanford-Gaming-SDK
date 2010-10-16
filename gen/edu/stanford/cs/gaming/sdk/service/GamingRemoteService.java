@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Volumes/Data/aslai/dev/cs294s/GamingSDK/src/edu/stanford/cs/gaming/sdk/service/GamingRemoteService.aidl
+ * Original file: /Users/james04321/android_dev/Stanford-Gaming-SDK/src/edu/stanford/cs/gaming/sdk/service/GamingRemoteService.aidl
  */
 package edu.stanford.cs.gaming.sdk.service;
 public interface GamingRemoteService extends android.os.IInterface
