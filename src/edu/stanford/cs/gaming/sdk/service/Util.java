@@ -271,6 +271,8 @@ public class Util {
        	  "&app_api_key=" + URLEncoder.encode(request.app_api_key);
        	  if (request.user_id != 0) {
            	 str += "&user_id=" + request.user_id;
+           	 str += "&fb_id=" + request.fb_id;
+           	 str += "&fb_token=" + URLEncoder.encode(request.token);
        	  }
        	  /*
        	  if (request.object != null) {

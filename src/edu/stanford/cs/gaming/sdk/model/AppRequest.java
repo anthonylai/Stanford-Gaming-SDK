@@ -12,14 +12,18 @@ public class AppRequest {
 	public Criterion[] criteria;
 	public String intentFilterEvent;
 	public Object reference;
+	public String token;
+	public long fb_id;
 	public AppRequest() {
 		
 	}
-	public AppRequest(int id, int app_id, String app_api_key, int user_id, String intentFilterEvent) {
+	public AppRequest(int id, int app_id, String app_api_key, int user_id, long fb_id, String token, String intentFilterEvent) {
 		this.id = id;
 		this.app_id = app_id;
 		this.app_api_key = app_api_key;
 		this.user_id = user_id;
+		this.fb_id = fb_id;
+		this.token = token;
 		this.intentFilterEvent = intentFilterEvent;
 	}
 	

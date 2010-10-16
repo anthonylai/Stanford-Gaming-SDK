@@ -79,7 +79,11 @@ int _arg0;
 _arg0 = data.readInt();
 int _arg1;
 _arg1 = data.readInt();
-boolean _result = this.setUserId(_arg0, _arg1);
+long _arg2;
+_arg2 = data.readLong();
+java.lang.String _arg3;
+_arg3 = data.readString();
+boolean _result = this.setUserId(_arg0, _arg1, _arg2, _arg3);
 reply.writeNoException();
 reply.writeInt(((_result)?(1):(0)));
 return true;
@@ -209,7 +213,7 @@ _data.recycle();
 }
 return _result;
 }
-public boolean setUserId(int appId, int userId) throws android.os.RemoteException
+public boolean setUserId(int appId, int userId, long fbId, java.lang.String token) throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 android.os.Parcel _reply = android.os.Parcel.obtain();
@@ -218,6 +222,8 @@ try {
 _data.writeInterfaceToken(DESCRIPTOR);
 _data.writeInt(appId);
 _data.writeInt(userId);
+_data.writeLong(fbId);
+_data.writeString(token);
 mRemote.transact(Stub.TRANSACTION_setUserId, _data, _reply, 0);
 _reply.readException();
 _result = (0!=_reply.readInt());
@@ -335,7 +341,7 @@ static final int TRANSACTION_getLastConciergeId = (android.os.IBinder.FIRST_CALL
 public int getCounter() throws android.os.RemoteException;
 public java.lang.String getLocationString() throws android.os.RemoteException;
 public boolean addApp(int appId, java.lang.String appApiKey, java.lang.String intentFilterEvent) throws android.os.RemoteException;
-public boolean setUserId(int appId, int userId) throws android.os.RemoteException;
+public boolean setUserId(int appId, int userId, long fbId, java.lang.String token) throws android.os.RemoteException;
 public void doGet(java.lang.String url) throws android.os.RemoteException;
 //	void putGameObject(String gameObjJsonStr);
 //	String getNextCompletedTask(int appId);

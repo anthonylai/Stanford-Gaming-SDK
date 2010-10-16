@@ -27,15 +27,7 @@ import android.widget.Toast;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,8 +47,10 @@ public class GamingService extends Service implements LocationListener {
 //	private Intent broadcast=new Intent(BROADCAST_ACTION);	
 //	public static String gamingServer = "http://171.64.73.173:3000";
 //	public static String gamingServer = "http://colby.stanford.edu/gaming";
-	public static String gamingServer = "http://happyfeet.heroku.com";
+//	public static String gamingServer = "http://happyfeet.heroku.com";
+	public static String gamingServer = "http://76.126.253.56:3000";
 
+	
 	private Timer timer = new Timer(); 
 	ArrayList<Intent> intentArr = new ArrayList<Intent>();
 	String testString = new String();
@@ -105,10 +99,10 @@ public class GamingService extends Service implements LocationListener {
         	return true;
         	
         }
-        public boolean setUserId(int appId, int userId) {
+        public boolean setUserId(int appId, int userId, long fb_id, String token) {
         	App app = null;
         	if ((app= appHash.get(appId)) != null) {
-        		app.setUserId(userId);
+                app.setUserId(userId, fb_id, token);
         		return true;
 
         	}

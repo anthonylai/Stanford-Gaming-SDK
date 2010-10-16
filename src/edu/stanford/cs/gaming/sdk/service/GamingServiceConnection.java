@@ -40,6 +40,8 @@ public class GamingServiceConnection implements ServiceConnection  {
 	private String appApiKey;
 	private int userId;
 	private String intentFilterEvent;
+	private String token;
+	private long fbId;
 	public GamingServiceConnection(Activity activity, BroadcastReceiver receiver, 
 			int appId, String appApiKey, String intentFilterEvent) {
 		this.activity = activity;
@@ -64,7 +66,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 			grs = GamingRemoteService.Stub.asInterface(service);
 			try {
 				grs.addApp(appId, appApiKey, intentFilterEvent);
-				grs.setUserId(appId, userId);
+				grs.setUserId(appId, userId, fbId, token); 
 				
 //				try {
 					activity.registerReceiver(receiver, new IntentFilter(intentFilterEvent));
@@ -150,11 +152,13 @@ public class GamingServiceConnection implements ServiceConnection  {
 		Util.toJson(request);
 		return true;
 	}
-	public void setUserId(int userId)  {
+	public void setUserId(int userId, long fbId, String token)  {
 		this.userId = userId;
+		this.fbId = fbId;
+		this.token = token;
 		if (grs != null) {
-		try {
-			grs.setUserId(appId, userId);
+        try {
+          grs.setUserId(appId, userId, fbId, token);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -196,7 +200,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		return true;
 	}
 	public boolean getObjProperties(int requestId, int userId, int groupId, String objType, String[] objPropName) throws RemoteException {				
-		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "ObjProperty";
     	appRequest.path = "/object_properties";
@@ -217,7 +221,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	
 	
 	public boolean deleteObjProperties(int requestId, int[] objPropIds) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "delete";
     	appRequest.model = "ObjProperty";
     	appRequest.path = "/object_properties/0";
@@ -226,7 +230,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;		}
 	
 	public boolean updateObjProperties(int requestId, ObjProperty[] objProps) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "put";
     	appRequest.model = "ObjProperty";
     	appRequest.path = "/object_properties/0";
@@ -235,7 +239,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;	
     }
 	public boolean createObjProperties(int requestId, ObjProperty[] objProps) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "ObjProperty";
     	appRequest.path = "/object_properties";
@@ -244,7 +248,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;	
 	}	
 	public boolean getAppsUser(int requestId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Users";
     	appRequest.path = "/users";
@@ -253,7 +257,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 
 	}
 	public boolean getUser(int requestId, int userId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Users";
     	appRequest.path = "/users/" + userId;
@@ -263,7 +267,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 
 	
 	public boolean registerUser(int requestId, User user) throws RemoteException {
-		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
 		appRequest.action = "post";
 		appRequest.model = "Users";
 		appRequest.path = "/users";
@@ -276,7 +280,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		}
 	
 	public boolean getInvitableFriends(int requestId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Users";
     	appRequest.path = "/users/get_friends/" + this.userId;
@@ -287,7 +291,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 	
     public boolean getFriends(int requestId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Users";
     	appRequest.path = "/users/friends";
@@ -296,7 +300,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     }
 
 	public boolean getScoreBoard(int requestId, int scoreBoardId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards/" + scoreBoardId;
@@ -309,7 +313,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	 *  Order = "desc" -- desc
 	 */
 	public boolean getScoreBoards(int requestId, int userId, int groupId, String type, String order) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards";
@@ -329,7 +333,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 	
 	public boolean getScoreBoards(int requestId, int[] scoreBoardIds) throws RemoteException {
-		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
 		appRequest.action = "get";
 		appRequest.model = "ScoreBoards";
 		appRequest.path = "/score_boards/get_scoreboards_by_ids/0";
@@ -340,7 +344,7 @@ public class GamingServiceConnection implements ServiceConnection  {
      }
 	
 	public boolean deleteScoreBoard(int requestId, int scoreBoardId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "delete";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards/" + scoreBoardId;
@@ -349,7 +353,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 	
 	public boolean updateScoreBoard(int requestId, ScoreBoard scoreBoard) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "put";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards/" + scoreBoard.id;
@@ -360,7 +364,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 
 	public boolean updateScoreBoards(int requestId, ScoreBoard[] scoreBoards) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "put";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards/multiple_update";
@@ -372,7 +376,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 	
 	public boolean createScoreBoard(int requestId, ScoreBoard scoreBoard) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards";
@@ -383,7 +387,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}	
 	
 	public boolean createScoreBoards(int requestId, ScoreBoard[] scoreBoards) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "ScoreBoards";
     	appRequest.path = "/score_boards/multiple_create";
@@ -394,7 +398,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		return true;
 	}
 	public boolean getObjs(int requestId, String type, int userId, int groupId, boolean withProperties) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Objs";
     	appRequest.path = "/objs";
@@ -413,7 +417,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true; 		
 	}	
 	public boolean getObj(int requestId, int objId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Objs";
     	appRequest.path = "/objs/" + objId;
@@ -421,7 +425,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true; 		
 	}
 	public boolean deleteObj(int requestId, int objId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "delete";
     	appRequest.model = "Objs";
     	appRequest.path = "/objs/" + objId;
@@ -429,7 +433,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true; 		
 	}
     public boolean createObj(int requestId, Obj obj) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "Objs";
     	appRequest.path = "/objs/";
@@ -443,7 +447,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	
 
     public boolean createGroup(int requestId, Group group) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/";
@@ -456,7 +460,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     public boolean getGroups(int requestId, String name, int userId,
     		int limit, int rowsRet) 
     throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Group";    	
     	appRequest.path = "/groups";
@@ -476,7 +480,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     }
     public boolean getGroup(int requestId, int groupId) 
     throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "get";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/" + groupId;
@@ -484,7 +488,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     	return true;
     }    
     public boolean deleteGroup(int requestId, int groupId) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "delete";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/" + groupId;
@@ -493,7 +497,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     }
     
     public boolean editGroup(int requestId, Group group) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "put";
     	appRequest.model = "Group";
     	appRequest.path = "/groups/" + group.id;
@@ -504,7 +508,7 @@ public class GamingServiceConnection implements ServiceConnection  {
     }	
         
 	public boolean deleteGroupUsers(int requestId, int groupId, User[] user) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "delete";
     	appRequest.model = "GroupUsers";
     	appRequest.path = "/groups_users/" + groupId;
@@ -514,7 +518,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 	
 	public boolean addGroupUsers(int requestId, int groupId, User[] user) throws RemoteException {
-    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+    	AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
     	appRequest.action = "post";
     	appRequest.model = "GroupUsers";
     	appRequest.path = "/groups_users/";
@@ -528,7 +532,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	public boolean sendMessage(int requestId, Object msg, int type, User fromUser, Group group, User[] toUsers, long dateTime, String intentFilterEvent) throws RemoteException {
 		AppRequest appRequest = null;
 //		if (intentFilterEvent == null)
-			appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.intentFilterEvent);
+			appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, this.intentFilterEvent);
 //		else
 //	    	appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, "edu.stanford.cs.gaming.sdk." + appId + "." + intentFilterEvent);
 			
@@ -555,7 +559,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 		
 	}
 	public boolean rateObj(int requestId, int objId, int rating) throws RemoteException {
-		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
 		appRequest.action = "get";
 		appRequest.model = "Objs";
 		appRequest.path = "/objs/add_rating/" + objId;
@@ -567,8 +571,8 @@ public class GamingServiceConnection implements ServiceConnection  {
     }	
 	
 	public boolean getUserScoreBoards(int requestId) throws RemoteException {
-		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
-		appRequest.action = "delete";
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
+		appRequest.action = "get";
 		appRequest.model = "ScoreBoards";
 		appRequest.path = "/score_boards/get_user_scoreboards/0";
 		grs.sendRequest(appId, Util.toJson(appRequest).toString()); 
@@ -576,15 +580,15 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}
 
 	public boolean getGroupScoreBoards(int requestId) throws RemoteException {
-		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
-		appRequest.action = "delete";
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
+		appRequest.action = "get";
 		appRequest.model = "ScoreBoards";
 		appRequest.path = "/score_boards/get_group_scoreboards/0";
 		grs.sendRequest(appId, Util.toJson(appRequest).toString()); 
 		return true;
 	}	
 	public boolean getMessages(int requestId, int conciergeId, int limit) throws RemoteException {
-	    AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, intentFilterEvent);
+	    AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
 	    appRequest.action = "getMessage";
 	    if (limit < 0)
 	    	limit = 10000;

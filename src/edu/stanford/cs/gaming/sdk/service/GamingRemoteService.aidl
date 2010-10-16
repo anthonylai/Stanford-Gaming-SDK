@@ -8,7 +8,7 @@ interface GamingRemoteService {
 	
 	boolean addApp(int appId, String appApiKey, String intentFilterEvent);
 	
-	boolean setUserId(int appId, int userId);
+	boolean setUserId(int appId, int userId, long fbId, String token);
 	
 	void doGet(String url);
 	

@@ -41,7 +41,7 @@ public class GamingTestActivity extends Activity {
         bindButton.setOnClickListener(new OnClickListener() {
           	public void onClick(View v){
           		gameConn.bind();
-                gameConn.setUserId(6);          		
+                gameConn.setUserId(6, 123, "12345");          		
           	}});
         Button unbindButton = (Button) findViewById(R.id.UnbindButton);
         unbindButton.setOnClickListener(new OnClickListener() {

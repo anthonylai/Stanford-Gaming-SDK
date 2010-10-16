@@ -21,6 +21,8 @@ public class App {
   public GamingService gamingService;
   public String tag;
   public int userId;
+  public String token;
+  private long fbId;
 
 
   public App(int appId, GamingService gamingService) {
@@ -35,8 +37,10 @@ public class App {
       
       
   }
-  public void setUserId(int userId) {
+  public void setUserId(int userId, long fbId2, String token) {
 	  this.userId = userId;
+	  this.fbId = fbId2;
+	  this.token = token;
   }
   
   public void addQueue(String intentFilterEvent) {

@@ -10,7 +10,7 @@ public class User {
   public long fb_id;
   public String fb_photo;
   public long[] friend_fb_ids;
-
+  public String fb_token;
 
   public User() {	  
   }
