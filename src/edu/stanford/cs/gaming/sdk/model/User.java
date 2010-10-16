@@ -17,7 +17,7 @@ public class User {
   
 	public String toString() {
 	  return "User id: " + id + " first_name: " + first_name + " last_name: " + last_name + " email: " + email
-	  + " fb_id: " + fb_id;
+	  + " fb_id: " + fb_id + " fb_token: " + fb_token;
   }
   
 }

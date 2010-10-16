@@ -267,7 +267,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 
 	
 	public boolean registerUser(int requestId, User user) throws RemoteException {
-		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
+		AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, user.fb_id, user.fb_token, intentFilterEvent);
 		appRequest.action = "post";
 		appRequest.model = "Users";
 		appRequest.path = "/users";
