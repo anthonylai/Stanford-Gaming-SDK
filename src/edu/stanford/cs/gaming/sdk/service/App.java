@@ -70,7 +70,7 @@ public class App {
 
 				  request = requestQ.take();
 				  Log.d(tag, "Request received is: " + request);
-
+/*
 				  if ("getMessage".equals(request.action)) {
 					  boolean messageReceived = false;
 					  messageReceived = gamingService.receiveMessage((Integer) request.object, request.model);
@@ -128,6 +128,7 @@ public class App {
 					  }					  
 
 				  } else {
+				  */
 					  //				  sleep(2000);
 					  //				  AppResponse response = new AppResponse();
 					  try {
@@ -151,7 +152,7 @@ public class App {
 						  Log.d(tag, "INTENTFILTEREVENT123 IS: " + request.intentFilterEvent);
 						  gamingService.sendBroadcast(new Intent(request.intentFilterEvent));
 					  }
-				  }
+//				  }
 
 			  } catch (Exception e) {
 				  // TODO Auto-generated catch block

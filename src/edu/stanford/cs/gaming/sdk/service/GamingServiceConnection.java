@@ -536,10 +536,12 @@ public class GamingServiceConnection implements ServiceConnection  {
 //		else
 //	    	appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, "edu.stanford.cs.gaming.sdk." + appId + "." + intentFilterEvent);
 			
-    	appRequest.action = "message";
+	    appRequest.action = "post";
+	    appRequest.model = "Messages";
+	    appRequest.path = "/messages";
     	Message message = new Message();
 		message.dateTime = dateTime;
-		message.fromGroup = group;
+//		message.fromGroup = group; -- not implemented
 		message.fromUser = fromUser;
 		message.msg = msg;
 		message.toIntentFilterEvent = "edu.stanford.cs.gaming.sdk." + appId + "." + intentFilterEvent;
@@ -589,12 +591,17 @@ public class GamingServiceConnection implements ServiceConnection  {
 	}	
 	public boolean getMessages(int requestId, int conciergeId, int limit) throws RemoteException {
 	    AppRequest appRequest = new AppRequest(requestId, appId, appApiKey, this.userId, this.fbId, this.token, intentFilterEvent);
-	    appRequest.action = "getMessage";
+//	    appRequest.action = "getMessage";
 	    if (limit < 0)
 	    	limit = 10000;
-	    appRequest.model = "" + limit;
-	    appRequest.path = "";
-	    appRequest.object = conciergeId;
+//	    appRequest.model = "" + limit;
+	    appRequest.action = "get";
+	    appRequest.model = "Messages";
+	    appRequest.path = "/messages/" + conciergeId + "/" + limit;
+	    MessageRequest msgReq = new MessageRequest();
+	    msgReq.lastMessageId = conciergeId;
+	    msgReq.limit = limit;
+	    appRequest.object = msgReq;
 	    grs.sendRequest(appId, Util.toJson(appRequest).toString());
 		return true;
 	}
