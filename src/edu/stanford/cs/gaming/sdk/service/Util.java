@@ -268,7 +268,7 @@ public class Util {
       //ASLAI: Add error handling if issues with network, possibly tell user to enable internet access
       public static String constructParams(AppRequest request) {
        	  String str = request.path + "?format=json&request_id=" + request.id + "&app_id=" + request.app_id +
-       	  "&app_api_key=" + URLEncoder.encode(request.app_api_key);
+       	  "&app_api_key=" + URLEncoder.encode(request.app_api_key) + "&sdk_version=" + GamingService.SDK_VERSION;
        	  if (request.user_id != 0) {
            	 str += "&user_id=" + request.user_id;
 
@@ -299,20 +299,20 @@ public class Util {
 
 			DefaultHttpClient httpclient = new DefaultHttpClient();
 			StringEntity se;	
-			Log.d(TAG, "GAMINGSERVICE.GAMINGSERVER IS: " + GamingService.gamingServer);
+			Log.d(TAG, "GAMINGSERVICE.GAMINGSERVER IS: " + GamingService.GAMING_SERVER);
 			if ("get".equals(request.action)) {
-				hrb = new HttpGet(GamingService.gamingServer + constructParams(request));
+				hrb = new HttpGet(GamingService.GAMING_SERVER + constructParams(request));
 				
 			} else if ("put".equals(request.action)) {
-				hrb = new HttpPut(GamingService.gamingServer + constructParams(request));
+				hrb = new HttpPut(GamingService.GAMING_SERVER + constructParams(request));
 		       	  if (request.object != null) {
 		       		  se = new StringEntity(URLEncoder.encode(Util.toJson(request.object).toString()));
 		       		  ((HttpPut) hrb).setEntity(se);
 		         	  }				
 			} else if ("delete".equals(request.action)) {
-				hrb = new HttpDelete(GamingService.gamingServer + constructParams(request));
+				hrb = new HttpDelete(GamingService.GAMING_SERVER + constructParams(request));
 			} else if ("post".equals(request.action)) {
-				hrb = new HttpPost(GamingService.gamingServer + constructParams(request));	
+				hrb = new HttpPost(GamingService.GAMING_SERVER + constructParams(request));	
 		       	  if (request.object != null) {
 		       		  se = new StringEntity(URLEncoder.encode(Util.toJson(request.object).toString()));
 		       		  ((HttpPost) hrb).setEntity(se);

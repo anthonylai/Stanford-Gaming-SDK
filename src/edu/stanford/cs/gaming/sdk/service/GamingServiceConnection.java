@@ -23,6 +23,7 @@ public class GamingServiceConnection implements ServiceConnection  {
 	public static final String RESULT_CODE_FAILURE = "failure";
 	
 	public static final String RESULT_CODE_SUCCESS = "success";	
+	public static final String RESULT_CODE_VERSION_ERROR = "version_error";
 	 public static final int OBJ_PROPERTIES_INT = 0;
 	 public static final int OBJ_PROPERTIES_FLOAT = 1;
 	 public static final int OBJ_PROPERTIES_STRING = 2;
